@@ -11,7 +11,7 @@
     <div class = 'card-header d-flex justify-content-center align-items-center mt-5'>
     <h1 class = 'text-center mt-5'>REGISTRATION</h1>
     </div>
-    <div class = 'card-body d-flex justify-content-center align-items-center'>
+    <div class = 'card-body d-flex justify-content-center align-items-center mt-2'>
         <form class = 'col-6 offest-3'>
             <div class="row">
                 <div class="col">
@@ -25,21 +25,126 @@
                 
             </div>
             <label for="txtEmail" class ="form-label">Email:</label>
-            <input class ="form-control" id="txtEmail" type="email">
+            <input class ="form-control" id="txtEmail" type="email">    
             <label type for="txtPassword" class ="form-label">Password:</label>
             <input class ="form-control" id="txtPassword" type = "password">
             <label type for="txtPhoneNumber" class ="form-label">Phone Number:</label>
-            <input class ="form-control" id="txtPhoneNumber">
+            <input class ="form-control" id="txtPhoneNumber"type="tel">
 
             <hr class="divider"></hr>
+
             <label type for="txtFarm" class ="form-label">FarmID:</label>
             <input class ="form-control" id="txtFarm">
-            <button class="btn btn-primary mt-3 col-12" id="btnSubmit" type="button">Submit:</button>
+    <div class="d-grid gap-2 col-6 mx-auto">
+            <button class ="btn btn-primary mt-3 col-12" id="btnSubmit" type="button" >Submit</button>
+            <button class ="btn btn-danger mt-3 col-12 btn-sm" id="btnClear" type="reset">Clear</button>
+    </div>
+            
             
         </form>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script>
+
+        $('#btnSubmit').click(function(){
+            let strFName = $('#txtFirstName').val();
+            let intFNameLength = $('#txtFirstName').val().length;
+
+            let strLName = $('#txtLastName').val();
+            let intLNameLength = $('#txtLastName').val().length;
+
+            let strEmail = $('#txtEmail').val();
+            let intEmailLength = $('#txtEmail').val().length;
+
+            let strPass = $('#txtPassword').val();
+            let intPassLength = $('#txtPassword').val().length;
+
+            let strPhoneNumber = $('#txtPhoneNumber').val();
+            let intPhoneNumber = $('#txtPhoneNumber').val().length;
+
+            let strFarmID = $('#txtFarm').val();
+            let intFarmID = $('#txtFarm').val().length;
+                
+            var blnErrorFound = false;
+            var blnLoginInfoFound = false;
+            var strErrorMessage ='';
+            var arrLoginInfo=[];
+            // PUT A DICTIONARY TO STORE LOGIN INFORMATION FOR THE FUTURE, IF PROJECT NEEDS US TO STORE EVERYTHING
+            // IN AN ARRAY WE HAVE IT THERE FOR FUTURE REFERENCE
+
+            if(intFNameLength < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter a First Name.';
+                    //console.log('You must enter a first name');
+            }
+            if(intFNameLength > 1){
+                arrLoginInfo.push(strFName);
+                blnLoginInfoFound = true;
+                console.log('First Name: ' + strFName);
+                // ALSO WENT AHEAD AND HAD THE IF STATEMENT RUN EVERYTHING INTO THE CONSOLE SO WE CAN HAVE THE INFORMATION STORED THERE AS WELL
+                // DID THIS SINCE I DON'T KNOW HOW WE PLAN ON STORING OR USING IT ON THE SITE
+                // WILL LEARN MORE ABOUT THIS IN CLASS FOR SURE
+            }
+            if(intLNameLength < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter a Last Name.';
+                    console.log('You must enter a last name');
+            }
+            if(intLNameLength > 1){
+                arrLoginInfo.push(strLName);
+                blnLoginInfoFound = true;
+                console.log('Last Name: ' + strFName);
+            }
+            if(intEmailLength < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter an Email.';
+                    console.log('You must enter an email');
+            }
+            if(intEmailLength > 1){
+                arrLoginInfo.push(strEmail);
+                blnLoginInfoFound = true;
+                console.log('Email: ' + strEmail);
+            }
+            if(intPassLength < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter a Password.';
+                    console.log('You must enter a password');
+            }
+            if(intPassLength > 1){
+                arrLoginInfo.push(strPass);
+                blnLoginInfoFound = true;
+                console.log('Password: ' + strPass);
+            }
+            if(intPhoneNumber < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter a Phone Number.';
+                    console.log('You must enter a Phone Number.');
+            }
+            if(intPhoneNumber > 1){
+                arrLoginInfo.push(strPhoneNumber);
+                blnLoginInfoFound = true;
+                console.log('Phone Number: ' + strPhoneNumber);
+            }
+            if(intFarmID < 1){
+                    blnErrorFound = true;
+                    strErrorMessage += ' You must enter a FARM ID.';
+                    console.log('You must enter a FARM ID.');
+            }
+            if(intFarmID > 1){
+                arrLoginInfo.push(strFName);
+                blnLoginInfoFound = true;
+                console.log('FARMID: ' + strFarmID);
+            }
+            if(blnErrorFound == true){
+                    alert(strErrorMessage);
+            }
+            if(blnLoginInfoFound == true){
+                    console.log('Login info: ' +arrLoginInfo);
+            }
+        })   
+
+    </script>
 </body>
 </html>
