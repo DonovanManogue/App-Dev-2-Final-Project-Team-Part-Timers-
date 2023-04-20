@@ -89,19 +89,30 @@
 </div>
 </div>
 <div id="divWorkers" style="display: none;">
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100">
+    <img src="organic farmer.jpg" alt="farmer">
+    </div>
 
 </div>
 <div id="divFarms" style="display: none;">
-
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" ">
+    <img src="farm.jpg" alt="farm">
+    </div>
 </div>
 <div id="divProducts" style="display: none;">
-
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100"  >
+    <img src="cropped.webp" alt="farm products">
+    </div>
 </div>
 <div id="divTasks" style="display: none;">
-
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" style=" background-size: cover;">
+    <img src="farmtask.jpg" alt="farm products" >
+    </div>
 </div>
 <div id="divReports" style="display: none;">
-
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" style=" background-size: cover;">
+    <img src="hay.jpg" >
+    </div>
 </div>
 
 
@@ -208,7 +219,6 @@ $("#btnLogin").click(function() {
   $("#navMain").show(1000);
   $("#divHome").show(1000);
   $("#divFirstBackground").hide(1000);
-  $("#divSecondBackground").show(1000);
   $("#divSlogan").hide(1000);
   $("#divSlogan2").hide(1000);
 });
@@ -221,6 +231,12 @@ $("#linkLogout").click(function() {
   $("#divFirstBackground").show(1000);
   $("#divSlogan").show(1000);
   $("#divSlogan2").show(1000);
+  $('#divFarms').hide(1000);
+  $('#divProducts').hide(1000);
+  $('#divTasks').hide(1000);
+  $('#divReports').hide(1000);
+  $('#divWorkers').hide(1000);
+  
 });
 
 $('#linkHome').click(function() {
