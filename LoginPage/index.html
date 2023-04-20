@@ -29,14 +29,94 @@
         background-color: #eeaf67;
         border-color: #eeaf67;
     }
+    .bg-hippieblue {
+        background-color:  #D6237F;
+    }
+
+    .h1 {
+        text-shadow: 2px 2px #000000;
+}
+    
 </style>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-hippieblue" id="navMain" style="display:none; ">
     <div class="container-fluid">
+      <a class="navbar-brand" href="#"><div class="h-100 d-flex align-items-center"><img src="hippo.png"  alt="HIPPOFARMSLOGO" style="max-height: 35px;" ></div></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" id="linkHome" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkWorkers" href="#">Workers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkFarms" href="#">Farms</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkProducts" href="#">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkTasks" href="#">Tasks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkReports" href="#">Reports</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="linkLogout" href="#">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>
+
+
+<div id="divHome" style="display: none;">
+  <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" style="background-image: url(grown-vegetables.jpg); background-size: cover;">
+    <h1 class="text-white" style="font: 10em sans-serif; margin-top: 50px; position: absolute; top: 0%; left: 25%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>HIPPOFARMS</b></h1>
+
+  
+      
+  
+    </div>
+
+</div>
+</div>
+<div id="divWorkers" style="display: none;">
+
+</div>
+<div id="divFarms" style="display: none;">
+
+</div>
+<div id="divProducts" style="display: none;">
+
+</div>
+<div id="divTasks" style="display: none;">
+
+</div>
+<div id="divReports" style="display: none;">
+
+</div>
+
+
+    <div id="divFirstBackground" class="container-fluid">
         <div class="row">
             <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" style="background-image: url(wallpaperflare.com_wallpaper.jpg); background-size: cover;"></div>
+            </div>
+        </div>
 
 
-            <div id="divSignUp"class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style=" display:none; margin-right: 0px; position: absolute; right: 0; position: absolute; bottom: 30%;">
+    <div id="divSlogan">
+      <h1 class="text-white"style="font: 10em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 80%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>"Harvesting love and goodness from our family's organic farm, for a healthier and happier you! ⟨™⟩ " -HIPPOFARMS</b></h1>
+    </div>
+    <div id="divSlogan2">
+      <h1 class="text-white"style="font: 2em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 78%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5); "><b>-"Harvesting love and goodness from our family's organic farm, for a healthier and happier you! ⟨™⟩ "</b></h1>
+    </div>
+
+            <div id="divSignUp"class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style=" display:none; margin-right: 0px; position: absolute; right: 0; position: absolute; bottom: 20%;">
                 <div>
                     <div class="">
                         <h1 class="text-center">SIGN UP</h1>
@@ -115,10 +195,26 @@
   });
   // Show the login div when the "Login" button is clicked
   $("#btnLogin").click(function() {
-    $("#divLogin").show();
-    $("#divSignUp").hide();
+    $("#divLogin").hide(1000);
+    $("#divSignUp").hide(1000);
+    $("#navMain").show(1000);
+    $("#divHome").show(1000);
+    $("#divFirstBackground").hide(1000);
+    $("#divSecondBackground").show(1000);
+    $("#divSlogan").hide(1000);
+    $("#divSlogan2").hide(1000);
   });
 });
+
+$("#linkLogout").click(function() {
+    $("#divLogin").show(1000);
+    $("#divSignUp").hide(1000);
+    $("#navMain").hide(1000);
+    $("#divHome").hide(1000);
+    $("#divFirstBackground").show(1000);
+    $("#divSlogan").show(1000);
+    $("#divSlogan2").show(1000);
+  });
   </script>
 </html>
 
