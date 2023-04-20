@@ -16,13 +16,13 @@
     }
     .btn-outline-pink {
         color: #fff;
-        background-color: #D6237F;
-        border-color: #D6237F;
+        background-color: #3597f9;
+        border-color: #3597f9;
     }
     .btn-outline-pink:hover {
         color: #fff;
-        background-color: #d86ca4;
-        border-color: #d86ca4;
+        background-color:#99c5f1;
+        border-color:#99c5f1;
     }
 
     .btn-pink:hover {
@@ -31,7 +31,7 @@
         border-color: #eeaf67;
     }
     .bg-hippieblue {
-        background-color:  #D6237F;
+        background-color:  #3597f9;
     }
 
     .h1 {
@@ -119,7 +119,7 @@
       <h1 class="text-white"style="font: 2em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 600px;  text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5); "><b>-"Harvesting love and goodness from our family's organic farm, for a healthier and happier you!"</b></h1>
     </div>
 
-            <div id="divSignUp"class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style=" display:none; margin-right: 0px; position: absolute; right: 0; position: absolute; bottom: 20%;">
+            <div id="divSignUp"class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style=" display:none; margin-left: 20px; position: absolute; left: 0%; position: absolute; bottom: 5%;">
                 <div>
                     <div class="">
                         <h1 class="text-center">SIGN UP</h1>
@@ -138,16 +138,16 @@
                                     </div>
                                 </div>
                                 <label for="txtEmail">Email:</label>
-                                <input type="email" id="txtEmail" class="form-control text-center mt-2" placeholder="johndoe@gmail.com">
+                                <input type="email" id="txtEmail" class="form-control mt-2" placeholder="johndoe@gmail.com">
                                 <label for="txtPassword">Password:</label>
-                                <input type="password" id="txtPassword" class="form-control text-center" placeholder="**********">
+                                <input type="password" id="txtPassword" class="form-control" placeholder="**********">
                                 <label for="txtPhoneNumber" class="text-center mt-2">Phone Number:</label>
-                                <input type="cell" id="txtPhoneNumber" class="form-control text-center" placeholder="000-000-0000">
+                                <input type="cell" id="txtPhoneNumber" class="form-control" placeholder="000-000-0000">
                                 <label for="txtFARMID" class="text-center mt-2">FARM ID:</label>
-                                <input type="text" id="txtFARMID" class="form-control text-center" placeholder="0000">
+                                <input type="text" id="txtFARMID" class="form-control" placeholder="0000">
                                 <div class="text-center">
                                     <button type="button" id="btnSignUp" class="btn btn-lg btn-pink rounded-pill w-75 mt-3">SIGN UP</button>
-                                    <button type="button" class="btn btn-lg btn-outline-pink rounded-pill w-75 mt-3" id="btnShowLogin">I Do Have an Account</button>
+                                    <button type="button" class="btn" style="color: blue;"id="btnShowLogin">I Do Have an Account</button>
                                 </div>
                             </div>
                         </form>
@@ -155,21 +155,21 @@
                 </div>
             </div>
             <div id="divLogin">
-                <div class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style="margin-right: 0px; position: absolute; right: 0; position: absolute; bottom: 30%;">
+                <div class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style="margin-left: 20px; position: absolute; left: 0%; position: absolute; bottom: 20%;">
                   <div>
                     <div class="">
                       <h1 class="text-center">LOGIN</h1>
                     </div>
                     <div class="card-body ">
-                      <div class="form-group text-center">
+                      <div class="form-group">
                         <form>
                           <label for="txtEmail">Email:</label>
-                          <input type="email" id="txtEmail" class="form-control text-center mt-2" placeholder="johndoe@gmail.com">
+                          <input type="email" id="txtEmail" class="form-control  mt-2" placeholder="johndoe@gmail.com">
                           <label for="txtPassword">Password:</label>
-                          <input type="password" id="txtPassword" class="form-control text-center" placeholder="**********">
+                          <input type="password" id="txtPassword" class="form-control " placeholder="**********">
                           <div class="text-center">
                             <button type="button" class="btn btn-lg btn-pink rounded-pill w-75 mt-3" id="btnLogin">Login</button>
-                            <button type="button" class="btn btn-lg btn-outline-pink rounded-pill w-75 mt-3" id="btnShowSignUp">I Don't Have an Account</button>
+                            <button type="button" style="color: blue;"class="btn" id="btnShowSignUp">I Don't Have an Account</button>
                           </div>
                           
                         </form>
@@ -181,179 +181,177 @@
             </div>
           
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+
 <script>
   var strBaseURL = 'http://localhost:8000'
+$(document).ready(function() {
 
- $(document).ready(function() {
+// Show the sign up div when the "I Don't Have an Account" button is clicked
+$("#btnShowSignUp").click(function() {
+  $("#divSignUp").show(1000);
+  $("#divLogin").hide(500);
+});
+  // Show the sign up div when the "Sign Up" button is clicked
+$("#btnShowLogin").click(function() {
+  $("#divLogin").show(1000);
+  $("#divSignUp").hide(500);
+});
 
-  // Show the sign up div when the "I Don't Have an Account" button is clicked
-  $("#btnShowSignUp").click(function() {
-    $("#divSignUp").show(1000);
-    $("#divLogin").hide(500);
-  });
-    // Show the sign up div when the "Sign Up" button is clicked
-  $("#btnShowLogin").click(function() {
-    $("#divLogin").show(1000);
-    $("#divSignUp").hide(500);
-  });
-  // Show the login div when the "Login" button is clicked
-  $("#btnLogin").click(function() {
-    $("#divLogin").hide(1000);
-    $("#divSignUp").hide(1000);
-    $("#navMain").show(1000);
-    $("#divHome").show(1000);
-    $("#divFirstBackground").hide(1000);
-    $("#divSecondBackground").show(1000);
-    $("#divSlogan").hide(1000);
-    $("#divSlogan2").hide(1000);
-  });
+// Show the login div when the "Login" button is clicked
+$("#btnLogin").click(function() {
+  $("#divLogin").hide(1000);
+  $("#divSignUp").hide(1000);
+  $("#navMain").show(1000);
+  $("#divHome").show(1000);
+  $("#divFirstBackground").hide(1000);
+  $("#divSecondBackground").show(1000);
+  $("#divSlogan").hide(1000);
+  $("#divSlogan2").hide(1000);
 });
 
 $("#linkLogout").click(function() {
-    $("#divLogin").show(1000);
-    $("#divSignUp").hide(1000);
-    $("#navMain").hide(1000);
-    $("#divHome").hide(1000);
-    $("#divFirstBackground").show(1000);
-    $("#divSlogan").show(1000);
-    $("#divSlogan2").show(1000);
-  });
+  $("#divLogin").show(1000);
+  $("#divSignUp").hide(1000);
+  $("#navMain").hide(1000);
+  $("#divHome").hide(1000);
+  $("#divFirstBackground").show(1000);
+  $("#divSlogan").show(1000);
+  $("#divSlogan2").show(1000);
+});
 
 $('#linkHome').click(function() {
-    $("#divHome").show(500);
-    $("#divFarms").hide(500);
-    $("#divProducts").hide(500);
-    $("#divTasks").hide(500);
-    $("#divReports").hide(500);
-    $("#divWorkers").hide(500);
-  });
+  $("#divHome").show(500);
+  $("#divFarms").hide(500);
+  $("#divProducts").hide(500);
+  $("#divTasks").hide(500);
+  $("#divReports").hide(500);
+  $("#divWorkers").hide(500);
+});
 
-  $('#linkWorkers').click(function() {
-    $("#divHome").hide(500);
-    $("#divFarms").hide(500);
-    $("#divProducts").hide(500);
-    $("#divTasks").hide(500);
-    $("#divReports").hide(500);
-    $("#divWorkers").show(500);
-  });
+$('#linkWorkers').click(function() {
+  $("#divHome").hide(500);
+  $("#divFarms").hide(500);
+  $("#divProducts").hide(500);
+  $("#divTasks").hide(500);
+  $("#divReports").hide(500);
+  $("#divWorkers").show(500);
+});
 
+$('#linkFarms').click(function() {
+  $("#divHome").hide(500);
+  $("#divFarms").show(500);
+  $("#divProducts").hide(500);
+  $("#divTasks").hide(500);
+  $("#divReports").hide(500);
+  $("#divWorkers").hide(500);
+});
 
-  $('#linkFarms').click(function() {
-    $("#divHome").hide(500);
-    $("#divFarms").show(500);
-    $("#divProducts").hide(500);
-    $("#divTasks").hide(500);
-    $("#divReports").hide(500);
-    $("#divWorkers").hide(500);
-  });
+$('#linkProducts').click(function() {
+  $("#divHome").hide(500);
+  $("#divFarms").hide(500);
+  $("#divProducts").show(500);
+  $("#divTasks").hide(500);
+  $("#divReports").hide(500);
+  $("#divWorkers").hide(500);
+});
 
-  $('#linkProducts').click(function() {
-    $("#divHome").hide(500);
-    $("#divFarms").hide(500);
-    $("#divProducts").show(500);
-    $("#divTasks").hide(500);
-    $("#divReports").hide(500);
-    $("#divWorkers").hide(500);
-  });
+$('#linkTasks').click(function() {
+  $("#divHome").hide(500);
+  $("#divFarms").hide(500);
+  $("#divProducts").hide(500);
+  $("#divTasks").show(500);
+  $("#divReports").hide(500);
+  $("#divWorkers").hide(500);
+});
 
-  $('#linkTasks').click(function() {
-    $("#divHome").hide(500);
-    $("#divFarms").hide(500);
-    $("#divProducts").hide(500);
-    $("#divTasks").show(500);
-    $("#divReports").hide(500);
-    $("#divWorkers").hide(500);
-  });
-
-  $('#linkReports').click(function() {
-    $("#divHome").hide(500);
-    $("#divFarms").hide(500);
-    $("#divProducts").hide(500);
-    $("#divTasks").hide(500);
-    $("#divReports").show(500);
-    $("#divWorkers").hide(500);
-  });
+$('#linkReports').click(function() {
+  $("#divHome").hide(500);
+  $("#divFarms").hide(500);
+  $("#divProducts").hide(500);
+  $("#divTasks").hide(500);
+  $("#divReports").show(500);
+  $("#divWorkers").hide(500);
+});
 
  
-  /*$('#btnSignUp').on('click', function(){ 
-    blnError = false;
-    strHTML = '';
-    if($('#txtFirstName').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your first name.<br>';
-    }
-    if($('#txtLastName').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your last name.<br>';
-    }
-    if($('#txtEmail').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your email.<br>';
-    }
-    if($('#txtPassword').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your password.<br>';
-    }
-    if($('#txtPhoneNumber').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your phone number.<br>';
-    }
-    if($('#txtFARMID').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your FARM ID.<br>';
-    }
-    if(blnError == true){
+$('#btnSignUp').on('click', function(){
+  var blnError = false;
+  var strHTML = '';
+if($('#txtFirstName').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your first name.<br>';
+}
+if($('#txtLastName').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your last name.<br>';
+}
+if($('#txtEmail').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your email.<br>';
+}
+if($('#txtPassword').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your password.<br>';
+}
+if($('#txtPhoneNumber').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your phone number.<br>';
+}
+if($('#txtFARMID').val() == ''){
+  blnError = true;
+  strHTML += 'Please enter your FARM ID.<br>';
+}
+if(blnError == true){
+  swal.fire({
+  text: 'Please correct the following errors:',
+  html: strHTML,
+  icon: 'error',
+  confirmButtonText: 'OK'
+});
+} else { 
+  let strfirstName= $('#txtFirstName').val();
+  let strlastName= $('#txtLastName').val();
+  let strEmail= $('#txtEmail').val();
+  let strPassword= $('#txtPassword').val();
+  let strPhoneNumber= $('#txtPhoneNumber').val();
+  let strFARMID= $('#txtFARMID').val();
+  
+  $.post(strBaseURL + '/signup', {
+    firstName: strfirstName,
+    lastName: strlastName,
+    email: strEmail,
+    password: strPassword,
+    phoneNumber: strPhoneNumber,
+    FARMID: strFARMID}, function(result){
+    console.log(result);
+    if(result){  
+      result = JSON.parse(result) 
+      console.log(result);
+    
+    } else{
         swal.fire({
-                text: 'Please correct the following errors:',
-                html: strHTML,
-                icon: 'error',
-                confirmButtonText: 'OK'
-
-            })
-    }
-    else{
-        $.ajax({
-            url: strBaseURL + '/signup',
-            method: 'POST',
-            data: {
-                strFirstName: $('#txtFirstName').val(),
-                strLastName: $('#txtLastName').val(),
-                strEmail: $('#txtEmail').val(),
-                strPassword: $('#txtPassword').val(),
-                strPhoneNumber: $('#txtPhoneNumber').val(),
-                strFARMID: $('#txtFARMID').val()
-            },
-            success: function(objResponse){
-                if(objResponse.blnSuccess == true){
-                    swal.fire({
-                        text: 'You have successfully signed up!',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(function(){
-                        window.location.href = strBaseURL + '/login';
-                    });
-                }
-                else{
-                    swal.fire({
-                        text: 'There was an error signing up. Please try again.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            error: function(objError){
-                swal.fire({
-                    text: 'There was an error signing up. Please try again.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
+        text: 'There was an error signing up. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK'
         });
-    } */
+      }
+    });
+  swal.fire({
+  text: 'You have successfully signed up!',
+  icon: 'success',
+  confirmButtonText: 'OK'
+});
+$('#divLogin').show(1500);
+$('#divSignUp').hide(1500);
+}
+});
+});
 
-  </script>
+
+</script>
 </html>
 
