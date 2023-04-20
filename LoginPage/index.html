@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>HIPPOFARMS</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css">
 </head>
 <style>
     .btn-pink {
@@ -112,10 +113,10 @@
 
 
     <div id="divSlogan">
-      <h1 class="text-white"style="font: 10em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 80%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>"Harvesting love and goodness from our family's organic farm, for a healthier and happier you! ⟨™⟩ " -HIPPOFARMS</b></h1>
+      <h1 class="text-white"style="font: 10em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 625px; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>HIPPOFARMS</b></h1>
     </div>
     <div id="divSlogan2">
-      <h1 class="text-white"style="font: 2em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 78%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5); "><b>-"Harvesting love and goodness from our family's organic farm, for a healthier and happier you! ⟨™⟩ "</b></h1>
+      <h1 class="text-white"style="font: 2em sans-serif; margin-left: 30px; position: absolute; left: 0; position: absolute; bottom: 600px;  text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5); "><b>-"Harvesting love and goodness from our family's organic farm, for a healthier and happier you!"</b></h1>
     </div>
 
             <div id="divSignUp"class="col-sm-12 col-md-6 col-lg-4 vh-50 card border-4 justify-content-center" style=" display:none; margin-right: 0px; position: absolute; right: 0; position: absolute; bottom: 20%;">
@@ -145,7 +146,7 @@
                                 <label for="txtFARMID" class="text-center mt-2">FARM ID:</label>
                                 <input type="text" id="txtFARMID" class="form-control text-center" placeholder="0000">
                                 <div class="text-center">
-                                    <button type="button" id="btnSignUp" class="btn btn-lg btn-pink rounded-pill w-75 mt-3">Submit</button>
+                                    <button type="button" id="btnSignUp" class="btn btn-lg btn-pink rounded-pill w-75 mt-3">SIGN UP</button>
                                     <button type="button" class="btn btn-lg btn-outline-pink rounded-pill w-75 mt-3" id="btnShowLogin">I Do Have an Account</button>
                                 </div>
                             </div>
@@ -182,7 +183,10 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
 <script>
+  var strBaseURL = 'http://localhost:8000'
+
  $(document).ready(function() {
 
   // Show the sign up div when the "I Don't Have an Account" button is clicked
@@ -206,6 +210,64 @@
     $("#divSlogan").hide(1000);
     $("#divSlogan2").hide(1000);
   });
+});
+$('#btnSignUp').on('click', function(){
+    blnError = false;
+    strHTML = '';
+    if($('#txtFirstName').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your first name.<br>';
+    }
+    if($('#txtLastName').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your last name.<br>';
+    }
+    if($('#txtEmail').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your email.<br>';
+    }
+    if($('#txtPassword').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your password.<br>';
+    }
+    if($('#txtPhoneNumber').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your phone number.<br>';
+    }
+    if($('#txtFARMID').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your FARM ID.<br>';
+    }
+    if(blnError == true){
+        swal.fire({
+                text: 'Please correct the following errors:',
+                html: strHTML,
+                icon: 'error',
+                confirmButtonText: 'OK'
+
+            })
+    } else {
+      $.post(strBaseURL + '/signup', {
+    firstName: $('#txtFirstName').val(),
+    lastName: $('#txtLastName').val(),
+    email: $('#txtEmail').val(),
+    password: $('#txtPassword').val(),
+    phoneNumber: $('#txtPhoneNumber').val()
+})
+.done(function(result){
+    let objResult = JSON.parse(result);
+    if(objResult.Outcome){
+        swal.fire({
+            icon: 'success',
+            html: "<p>User Successfully Registered for Today's Event!</p>",
+            confirmButtonText: 'OK' 
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#divLogin').show(1000);
+                $('#divSignUp').slideToggle(1000);
+            }
+        });
+    }
 });
 
 $("#linkLogout").click(function() {
@@ -278,5 +340,4 @@ $('#linkHome').click(function() {
 
   </script>
 </html>
-
 
