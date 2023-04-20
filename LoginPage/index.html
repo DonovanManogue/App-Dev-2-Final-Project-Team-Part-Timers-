@@ -76,7 +76,9 @@
 
 <div id="divHome" style="display: none;">
   <div class="col-md-6 col-lg-12 d-none d-md-block vh-100" style="background-image: url(grown-vegetables.jpg); background-size: cover;">
-    <h1 class="text-white" style="font: 10em sans-serif; margin-top: 50px; position: absolute; top: 0%; left: 25%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>HIPPOFARMS</b></h1>
+    <img src="hippo.png" alt="HIPPOFARMSLOGO">
+    <h1 class="text-white" style="font: 10em sans-serif; margin-top: 50px; position: absolute; top: 0%; left: 20%; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);"><b>HIPPOFARMS</b></h1>
+
 
   
       
@@ -215,6 +217,65 @@ $("#linkLogout").click(function() {
     $("#divSlogan").show(1000);
     $("#divSlogan2").show(1000);
   });
+
+$('#linkHome').click(function() {
+    $("#divHome").show(500);
+    $("#divFarms").hide(500);
+    $("#divProducts").hide(500);
+    $("#divTasks").hide(500);
+    $("#divReports").hide(500);
+    $("#divWorkers").hide(500);
+  });
+
+  $('#linkWorkers').click(function() {
+    $("#divHome").hide(500);
+    $("#divFarms").hide(500);
+    $("#divProducts").hide(500);
+    $("#divTasks").hide(500);
+    $("#divReports").hide(500);
+    $("#divWorkers").show(500);
+  });
+
+
+  $('#linkFarms').click(function() {
+    $("#divHome").hide(500);
+    $("#divFarms").show(500);
+    $("#divProducts").hide(500);
+    $("#divTasks").hide(500);
+    $("#divReports").hide(500);
+    $("#divWorkers").hide(500);
+  });
+
+  $('#linkProducts').click(function() {
+    $("#divHome").hide(500);
+    $("#divFarms").hide(500);
+    $("#divProducts").show(500);
+    $("#divTasks").hide(500);
+    $("#divReports").hide(500);
+    $("#divWorkers").hide(500);
+  });
+
+  $('#linkTasks').click(function() {
+    $("#divHome").hide(500);
+    $("#divFarms").hide(500);
+    $("#divProducts").hide(500);
+    $("#divTasks").show(500);
+    $("#divReports").hide(500);
+    $("#divWorkers").hide(500);
+  });
+
+  $('#linkReports').click(function() {
+    $("#divHome").hide(500);
+    $("#divFarms").hide(500);
+    $("#divProducts").hide(500);
+    $("#divTasks").hide(500);
+    $("#divReports").show(500);
+    $("#divWorkers").hide(500);
+  });
+
+ 
+
+
   </script>
 </html>
 
