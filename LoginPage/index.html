@@ -211,64 +211,6 @@
     $("#divSlogan2").hide(1000);
   });
 });
-$('#btnSignUp').on('click', function(){
-    blnError = false;
-    strHTML = '';
-    if($('#txtFirstName').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your first name.<br>';
-    }
-    if($('#txtLastName').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your last name.<br>';
-    }
-    if($('#txtEmail').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your email.<br>';
-    }
-    if($('#txtPassword').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your password.<br>';
-    }
-    if($('#txtPhoneNumber').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your phone number.<br>';
-    }
-    if($('#txtFARMID').val() == ''){
-        blnError = true;
-        strHTML += 'Please enter your FARM ID.<br>';
-    }
-    if(blnError == true){
-        swal.fire({
-                text: 'Please correct the following errors:',
-                html: strHTML,
-                icon: 'error',
-                confirmButtonText: 'OK'
-
-            })
-    } else {
-      $.post(strBaseURL + '/signup', {
-    firstName: $('#txtFirstName').val(),
-    lastName: $('#txtLastName').val(),
-    email: $('#txtEmail').val(),
-    password: $('#txtPassword').val(),
-    phoneNumber: $('#txtPhoneNumber').val()
-})
-.done(function(result){
-    let objResult = JSON.parse(result);
-    if(objResult.Outcome){
-        swal.fire({
-            icon: 'success',
-            html: "<p>User Successfully Registered for Today's Event!</p>",
-            confirmButtonText: 'OK' 
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#divLogin').show(1000);
-                $('#divSignUp').slideToggle(1000);
-            }
-        });
-    }
-});
 
 $("#linkLogout").click(function() {
     $("#divLogin").show(1000);
@@ -336,7 +278,81 @@ $('#linkHome').click(function() {
   });
 
  
+  /*$('#btnSignUp').on('click', function(){ 
+    blnError = false;
+    strHTML = '';
+    if($('#txtFirstName').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your first name.<br>';
+    }
+    if($('#txtLastName').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your last name.<br>';
+    }
+    if($('#txtEmail').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your email.<br>';
+    }
+    if($('#txtPassword').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your password.<br>';
+    }
+    if($('#txtPhoneNumber').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your phone number.<br>';
+    }
+    if($('#txtFARMID').val() == ''){
+        blnError = true;
+        strHTML += 'Please enter your FARM ID.<br>';
+    }
+    if(blnError == true){
+        swal.fire({
+                text: 'Please correct the following errors:',
+                html: strHTML,
+                icon: 'error',
+                confirmButtonText: 'OK'
 
+            })
+    }
+    else{
+        $.ajax({
+            url: strBaseURL + '/signup',
+            method: 'POST',
+            data: {
+                strFirstName: $('#txtFirstName').val(),
+                strLastName: $('#txtLastName').val(),
+                strEmail: $('#txtEmail').val(),
+                strPassword: $('#txtPassword').val(),
+                strPhoneNumber: $('#txtPhoneNumber').val(),
+                strFARMID: $('#txtFARMID').val()
+            },
+            success: function(objResponse){
+                if(objResponse.blnSuccess == true){
+                    swal.fire({
+                        text: 'You have successfully signed up!',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(function(){
+                        window.location.href = strBaseURL + '/login';
+                    });
+                }
+                else{
+                    swal.fire({
+                        text: 'There was an error signing up. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function(objError){
+                swal.fire({
+                    text: 'There was an error signing up. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    } */
 
   </script>
 </html>
