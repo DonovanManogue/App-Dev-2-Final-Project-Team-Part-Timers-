@@ -857,7 +857,10 @@ app.delete("/harvests", (req,res,next) => {
             res.status(400).send(objError);
         }
     })
+}
+    })
 })
+
 
 app.delete("/positions", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -879,8 +882,7 @@ app.delete("/positions", (req,res,next) => {
     })
 }
     })
-
-
+})
 app.delete("/products", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = uuidv4();
@@ -1066,3 +1068,4 @@ function getUserBySessionID(strSessionID,callback){
     })
 }
 // End Step Five
+// Step Six

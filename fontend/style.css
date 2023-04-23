@@ -1,0 +1,139 @@
+
+    .btn-pink {
+        color: #fff;
+        background-color: #FF8903;
+        border-color: #FF8903;
+    }
+    .btn-outline-pink {
+        color: #fff;
+        background-color: #3597f9;
+        border-color: #3597f9;
+    }
+    .btn-outline-pink:hover {
+        color: #fff;
+        background-color:#99c5f1;
+        border-color:#99c5f1;
+    }
+
+    .btn-pink:hover {
+        color: #fff;
+        background-color: #eeaf67;
+        border-color: #eeaf67;
+    }
+    .bg-hippieblue {
+        background-color:  #3597f9;
+    }
+
+    .h1 {
+        text-shadow: 2px 2px #000000;
+}
+.divHome { 
+  background: url(grown-vegetables.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divWorkers { 
+  background: url(organic\ farmer.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divFarms { 
+  background: url(farm.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.divProducts  { 
+  background: url(cropped.webp) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divTasks { 
+  background: url(farmtask.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divReports { 
+  background: url(hay.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divInventory {
+  background: url(Inventory\ Barn.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divHarvests{
+  background: url(Harvest.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: fill;
+}
+.divFirstBackground { 
+  background: url(wallpaperflare.com_wallpaper.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.card1{
+  background-color: rgba(49, 46, 46, 0.5);
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+}
+.card2{
+  background-color: rgba(49, 46, 46, 0.5);
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+}
+.card1 {
+  width: 100%;
+  height: 100%;
+}
+.card2 {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll; /* add scroll option */
+}
+
+@media only screen and (min-width: 768px) {
+  .card1 {
+    width: 80%;
+    height: auto;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .card1 {
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .card2 {
+    width: 80%;
+    height: auto;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .card2 {
+    width: 60%;
+  }
+}
