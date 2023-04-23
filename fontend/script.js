@@ -116,7 +116,7 @@ $('#linkInventory').on('click', function() {
   $("#divFarms").hide(500);
   $("#divProducts").hide(500);
   $("#divTasks").hide(500);
-  $("#divReports").show(500);
+  $("#divReports").hide(500);
   $("#divWorkers").hide(500);
   $("#divInventory").show(500);
   $("#divHarvests").hide(500);
@@ -126,7 +126,7 @@ $("#linkHarvests").on('click', function() {
   $("#divFarms").hide(500);
   $("#divProducts").hide(500);
   $("#divTasks").hide(500);
-  $("#divReports").show(500);
+  $("#divReports").hide(500);
   $("#divWorkers").hide(500);
   $("#divInventory").hide(500);
   $("#divHarvests").show(500);
@@ -343,4 +343,244 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
               
             });
 
-          
+        var emptyRow2 = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
+        var emptyNewRow2 = "<tr class='trNewRow'>"; 
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdFarmName'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtFarmName' placeholder='Enter a Farm Name'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdStreetAddress'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtStreetAddress' placeholder='Enter an Address'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdStreetAddress2'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtStreetAddress2' placeholder='Apartment, studio, floor, or N/A'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdCity'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtCity' placeholder='Enter a City'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";  
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdState'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtState' placeholder='Enter a State'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";  
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdZIP'>";
+        emptyNewRow2 = emptyNewRow2 + "        <input type='text' class='form-control txtZIP' placeholder='Enter a ZIP Code'/>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";  
+        emptyNewRow2 = emptyNewRow2 + "    <td class='tdAction'>";
+        emptyNewRow2 = emptyNewRow2 + "        <button class='btn btn-sm btn-success btn-save'> Save</button>";
+        emptyNewRow2 = emptyNewRow2 + "        <button class='btn btn-sm btn-success btn-cancel'> Cancel</button>";
+        emptyNewRow2 = emptyNewRow2 + "    </td>";
+        emptyNewRow2 = emptyNewRow2 + "</tr>";
+
+        var rowButtons2 ="<button class='btn btn-success btn-sm btn-edit' > Edit </button>  <button class='btn btn-danger btn-sm' > Delete </button> ";
+        var rowUpdateButtons2 ="<button class='btn btn-success btn-sm btn-save' > Update </button>  <button class='btn btn-danger btn-sm btn-save' > Cancel </button> ";
+
+            $("#tblFarms tbody").append(emptyRow2); // adding empty row on page load 
+            
+            $("#btnAddFarms").click(function () { 
+                if ($("#tblFarms tbody").children().children().length == 1) {
+                    $("#tblFarms tbody").html("");
+                }
+                $("#tblFarms tbody").append(emptyNewRow2); // appending dynamic string to table tbody
+            });
+            
+            $('#tblFarms').on('click', '.btn-save', function () {
+                const farmname =  $(this).parent().parent().find(".txtFarmName").val();
+                $(this).parent().parent().find(".tdFarmName").html(""+farmname+""); 
+                const streetAddress =  $(this).parent().parent().find(".txtStreetAddress").val();
+                $(this).parent().parent().find(".tdStreetAddress").html(""+streetAddress+"");
+                const streetAddress2 =  $(this).parent().parent().find(".txtStreetAddress2").val();
+                $(this).parent().parent().find(".tdStreetAddress2").html(""+streetAddress2+"");
+                const city =  $(this).parent().parent().find(".txtCity").val();
+                $(this).parent().parent().find(".tdCity").html(""+city+"");
+                const state =  $(this).parent().parent().find(".txtState").val();
+                $(this).parent().parent().find(".tdState").html(""+state+"");
+                const zip =  $(this).parent().parent().find(".txtZIP").val();
+                $(this).parent().parent().find(".tdZIP").html(""+zip+"");
+                $(this).parent().parent().find(".tdAction").html(rowButtons2);
+            });
+             
+            
+            $('#tblFarms').on('click', '.btn-danger', function () { // registering function for delete button  
+                $(this).parent().parent().remove();
+                if ($("#tblFarms tbody").children().children().length == 0) {
+                    $("#tblFarms tbody").append(emptyRow2);
+                }
+            });
+            
+
+            $('#tblFarms').on('click', '.btn-cancel', function () { 
+                $(this).parent().parent().remove();
+            });
+            $('#tblFarms').on('click', '.btn-edit', function () { 
+                const farmname =$(this).parent().parent().find(".tdFarmName").html();
+
+                $(this).parent().parent().find(".tdFarmName").html("<input type='text' value='"+farmname+"' class='form-control txtFarmName' placeholder='Enter a Farm Name'/>"); 
+
+
+                const streetAddress =$(this).parent().parent().find(".tdStreetAddress").html();
+
+                $(this).parent().parent().find(".tdStreetAddress").html("<input type='text' value='"+streetAddress+"' class='form-control txtStreetAddress' placeholder='Enter an Address'/>"); 
+
+
+                const streetAddress2 =$(this).parent().parent().find(".tdStreetAddress2").html();
+
+                $(this).parent().parent().find(".tdStreetAddress2").html("<input type='text' value='"+streetAddress2+"' class='form-control txtMobile' placeholder='Apartment, studio, floor, or N/A'/>"); 
+
+                const city =$(this).parent().parent().find(".tdCity").html();
+
+                $(this).parent().parent().find(".tdCity").html("<input type='text' value='"+city+"' class='form-control txtCity' placeholder='Enter a City'/>"); 
+
+                const state =$(this).parent().parent().find(".tdState").html();
+
+                $(this).parent().parent().find(".tdState").html("<input type='text' value='"+state+"' class='form-control txtState' placeholder='Enter a State'/>"); 
+
+                const zip =$(this).parent().parent().find(".tdZIP").html();
+
+                $(this).parent().parent().find(".tdZIP").html("<input type='text' value='"+zip+"' class='form-control txtzip' placeholder='Enter a ZIP Code'/>"); 
+
+
+                $(this).parent().parent().find(".tdAction").html(rowUpdateButtons2);
+              
+            });
+
+            var emptyRow3 = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
+            var emptyNewRow3 = "<tr class='trNewRow'>"; 
+            emptyNewRow3 = emptyNewRow3 + "    <td class='tdShortName'>";
+            emptyNewRow3 = emptyNewRow3 + "        <input type='text' class='form-control txtShortName' placeholder='Enter a Short Name'/>";
+            emptyNewRow3 = emptyNewRow3 + "    </td>";
+            emptyNewRow3 = emptyNewRow3 + "    <td class='tdLongName'>";
+            emptyNewRow3 = emptyNewRow3 + "        <input type='text' class='form-control txtLongName' placeholder='Enter a Long Name'/>";
+            emptyNewRow3 = emptyNewRow3 + "    </td>";
+            emptyNewRow3 = emptyNewRow3 + "    <td class='tdDescription'>";
+            emptyNewRow3 = emptyNewRow3 + "        <input type='text' class='form-control txtDescription' placeholder='Enter a Description'/>";
+            emptyNewRow3 = emptyNewRow3 + "    </td>";  
+            emptyNewRow3 = emptyNewRow3 + "    <td class='tdStatus'>";
+            emptyNewRow3 = emptyNewRow3 + "        <input type='text' class='form-control txtStats' placeholder='Enter a Status'/>";
+            emptyNewRow3 = emptyNewRow3 + "    </td>";  
+            emptyNewRow3 = emptyNewRow3 + "    <td class='tdAction'>";
+            emptyNewRow3 = emptyNewRow3 + "        <button class='btn btn-sm btn-success btn-save'> Save</button>";
+            emptyNewRow3 = emptyNewRow3 + "        <button class='btn btn-sm btn-success btn-cancel'> Cancel</button>";
+            emptyNewRow3 = emptyNewRow3 + "    </td>";
+            emptyNewRow3 = emptyNewRow3 + "</tr>";
+    
+            var rowButtons3 ="<button class='btn btn-success btn-sm btn-edit' > Edit </button>  <button class='btn btn-danger btn-sm' > Delete </button> ";
+            var rowUpdateButtons3 ="<button class='btn btn-success btn-sm btn-save' > Update </button>  <button class='btn btn-danger btn-sm btn-save' > Cancel </button> ";
+    
+                $("#tblProducts tbody").append(emptyRow3); // adding empty row on page load 
+                
+                $("#btnAddProducts").click(function () { 
+                    if ($("#tblProducts tbody").children().children().length == 1) {
+                        $("#tblProducts tbody").html("");
+                    }
+                    $("#tblProducts tbody").append(emptyNewRow3); // appending dynamic string to table tbody
+                });
+                
+                $('#tblProducts').on('click', '.btn-save', function () {
+                    const shortname =  $(this).parent().parent().find(".txtShortName").val();
+                    $(this).parent().parent().find(".tdShortName").html(""+shortname+"");
+                    const longname =  $(this).parent().parent().find(".txtLongName").val();
+                    $(this).parent().parent().find(".tdLongName").html(""+longname+"");
+                    const description =  $(this).parent().parent().find(".txtDescription").val();
+                    $(this).parent().parent().find(".tdDescription").html(""+description+"");
+                    const status =  $(this).parent().parent().find(".txtStatus").val();
+                    $(this).parent().parent().find(".tdStatus").html(""+status+"");
+                    $(this).parent().parent().find(".tdAction").html(rowButtons3);
+                });
+                 
+                
+                $('#tblProducts').on('click', '.btn-danger', function () { // registering function for delete button  
+                    $(this).parent().parent().remove();
+                    if ($("#tblProducts tbody").children().children().length == 0) {
+                        $("#tblProducts tbody").append(emptyRow3);
+                    }
+                });
+                
+    
+                $('#tblProducts').on('click', '.btn-cancel', function () { 
+                    $(this).parent().parent().remove();
+                });
+                $('#tblProducts').on('click', '.btn-edit', function () { 
+                    const shortname =$(this).parent().parent().find(".tdShortName").html();
+
+                    $(this).parent().parent().find(".tdShortName").html("<input type='text' value='"+shortname+"' class='form-control txtShortName' placeholder='Enter a Short Name'/>");
+
+                    const longname =$(this).parent().parent().find(".tdLongName").html();
+
+                    $(this).parent().parent().find(".tdLongName").html("<input type='text' value='"+longname+"' class='form-control txtLongName' placeholder='Enter a Long Name'/>");
+
+                    const description =$(this).parent().parent().find(".tdDescription").html();
+
+                    $(this).parent().parent().find(".tdDescription").html("<input type='text' value='"+description+"' class='form-control txtDescription' placeholder='Enter a Description'/>");
+
+                    const status =$(this).parent().parent().find(".tdStatus").html();
+
+                    $(this).parent().parent().find(".tdStatus").html("<input type='text' value='"+status+"' class='form-control txtStatus' placeholder='Enter a Status'/>");
+
+                    $(this).parent().parent().find(".tdAction").html(rowUpdateButtons3);
+
+                });
+    
+            var emptyRow4 = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
+            var emptyNewRow4 = "<tr class='trNewRow'>";
+            emptyNewRow4 = emptyNewRow4 + "    <td class='tdTaskName'>";
+            emptyNewRow4 = emptyNewRow4 + "        <input type='text' class='form-control txtTaskName' placeholder='Enter a Task Name'/>";
+            emptyNewRow4 = emptyNewRow4 + "    </td>";
+            emptyNewRow4 = emptyNewRow4 + "    <td class='tdNotes'>";
+            emptyNewRow4 = emptyNewRow4 + "        <input type='text' class='form-control txtNotes' placeholder='Enter Notes'/>";
+            emptyNewRow4 = emptyNewRow4 + "    </td>";
+            emptyNewRow4 = emptyNewRow4 + "    <td class='tdStatus'>";
+            emptyNewRow4 = emptyNewRow4 + "        <input type='text' class='form-control txtStatus' placeholder='Enter a Status'/>";
+            emptyNewRow4 = emptyNewRow4 + "    </td>";
+            emptyNewRow4 = emptyNewRow4 + "    <td class='tdAction'>";
+            emptyNewRow4 = emptyNewRow4 + "        <button class='btn btn-sm btn-success btn-save'> Save</button>";
+            emptyNewRow4 = emptyNewRow4 + "        <button class='btn btn-sm btn-success btn-cancel'> Cancel</button>";
+            emptyNewRow4 = emptyNewRow4 + "    </td>";
+            emptyNewRow4 = emptyNewRow4 + "</tr>";
+
+            var rowButtons4 ="<button class='btn btn-success btn-sm btn-edit' > Edit </button>  <button class='btn btn-danger btn-sm' > Delete </button> ";
+            var rowUpdateButtons4 ="<button class='btn btn-success btn-sm btn-save' > Update </button>  <button class='btn btn-danger btn-sm btn-save' > Cancel </button> ";
+
+                $("#tblTasks tbody").append(emptyRow4); // adding empty row on page load
+
+                $("#btnAddTasks").click(function () {
+                    if ($("#tblTasks tbody").children().children().length == 1) {
+                        $("#tblTasks tbody").html("");
+                    }
+                    $("#tblTasks tbody").append(emptyNewRow4); // appending dynamic string to table tbody
+                });
+
+                $('#tblTasks').on('click', '.btn-save', function () {
+                    const taskname =  $(this).parent().parent().find(".txtTaskName").val();
+                    $(this).parent().parent().find(".tdTaskName").html(""+taskname+"");
+                    const notes =  $(this).parent().parent().find(".txtNotes").val();
+                    $(this).parent().parent().find(".tdNotes").html(""+notes+"");
+                    const status =  $(this).parent().parent().find(".txtStatus").val();
+                    $(this).parent().parent().find(".tdStatus").html(""+status+"");
+                    $(this).parent().parent().find(".tdAction").html(rowButtons4);
+                }
+                );
+
+                $('#tblTasks').on('click', '.btn-danger', function () { // registering function for delete button
+                    $(this).parent().parent().remove();
+                    if ($("#tblTasks tbody").children().children().length == 0) {
+                        $("#tblTasks tbody").append(emptyRow4);
+                    }
+                });
+
+                $('#tblTasks').on('click', '.btn-cancel', function () {
+                    $(this).parent().parent().remove();
+                });
+                $('#tblTasks').on('click', '.btn-edit', function () {
+                    const taskname =$(this).parent().parent().find(".tdTaskName").html();
+
+                    $(this).parent().parent().find(".tdTaskName").html("<input type='text' value='"+taskname+"' class='form-control txtTaskName' placeholder='Enter a Task Name'/>");
+
+                    const notes =$(this).parent().parent().find(".tdNotes").html();
+
+                    $(this).parent().parent().find(".tdNotes").html("<input type='text' value='"+notes+"' class='form-control txtNotes' placeholder='Enter Notes'/>");
+
+                    const status =$(this).parent().parent().find(".tdStatus").html();
+
+                    $(this).parent().parent().find(".tdStatus").html("<input type='text' value='"+status+"' class='form-control txtStatus' placeholder='Enter a Status'/>");
+
+                    $(this).parent().parent().find(".tdAction").html(rowUpdateButtons4);
+
+                });

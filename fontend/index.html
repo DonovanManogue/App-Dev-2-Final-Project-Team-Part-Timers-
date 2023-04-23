@@ -267,7 +267,7 @@
 
   <div id="divFarms" style="display: none;">
     <div class="divFarms row vh-100 justify-content-center align-items-center flex-wrap">
-      <div class="col-12 h-100 card2 border-0" style="position:absolute; top: 68px; ">
+      <div class="col-12 h-100 card3 border-0" style="position:absolute; top: 68px; ">
       <div class="col-12 card">
         <h2 class="text-center card-header">Farms</h2>
         <div class="card-body">
@@ -277,11 +277,10 @@
             </div>
           </div>
         <div class="row">
-          <table id="tblWorkers" class="table table-bordered">
+          <table id="tblFarms" class="table table-bordered">
             <thead>
               <tbody>
             <tr class="bg-dark text-white">
-              <th>FarmID</th>
               <th>FarmName</th>
               <th>StreetAddress</th>
               <th>StreetAddress2</th>
@@ -319,26 +318,25 @@
 
   <div id="divProducts" style="display: none;">
     <div class="divProducts row vh-100 justify-content-center align-items-center flex-wrap">
-      <div class="col-12 h-100 card2 border-0" style="position:absolute; top: 68px; ">
+      <div class="col-12 h-100 card3 border-0" style="position:absolute; top: 68px; ">
         <div class="col-12 card">
-          <h2 class="text-center card-header">Farms</h2>
+          <h2 class="text-center card-header">Products</h2>
           <div class="card-body">
             <div class="row"> 
               <div class="col-md-12">
-                  <input type="button" id="btnAddFarms" class="btn btn-primary" value="Add New" />
+                  <input type="button" id="btnAddProducts" class="btn btn-primary" value="Add New" />
               </div>
             </div>
           <div class="row">
-            <table id="tblWorkers" class="table table-bordered">
+            <table id="tblProducts" class="table table-bordered">
               <thead>
                 <tbody>
               <tr class="bg-dark text-white">
-                <th>ProductID</th>
                 <th>ShortName</th>
                 <th>LongName</th>
                 <th>Description</th>
                 <th>Status</th>
-                <th>FarmID</th>
+                <th>Actions</th>
               </tr>
             </tbody>
             </thead>
@@ -375,25 +373,24 @@
 
   <div id="divTasks" style="display: none;">
     <div class="divTasks row vh-100 justify-content-center align-items-center flex-wrap">
-      <div class="col-12 h-100 card2 border-0" style="position:absolute; top: 68px; ">
+      <div class="col-12 h-100 card3 border-0" style="position:absolute; top: 68px; ">
         <div class="col-12 card">
-          <h2 class="text-center card-header">Farms</h2>
+          <h2 class="text-center card-header">Products</h2>
           <div class="card-body">
             <div class="row"> 
               <div class="col-md-12">
-                  <input type="button" id="btnAddFarms" class="btn btn-primary" value="Add New" />
+                  <input type="button" id="btnAddTasks" class="btn btn-primary" value="Add New" />
               </div>
             </div>
           <div class="row">
-            <table id="tblWorkers" class="table table-bordered">
+            <table id="tblTasks" class="table table-bordered">
               <thead>
                 <tbody>
               <tr class="bg-dark text-white">
-                <th>TaskID</th>
                 <th>TaskName</th>
                 <th>Notes</th>
                 <th>Status</th>
-                <th>FarmID</th>
+                <th>Actions</th>
               </tr>
             </tbody>
             </thead>
@@ -418,9 +415,6 @@
           </div>
             </div>
       </div>
-      </div>
-        </div>  
-    </div>
       <div id="divInventory" style="display: none;">
       <div class="divInventory row vh-100 justify-content-center align-items-center flex-wrap">
         <div class="col-12 h-100 card1 border-0" style="position:absolute; top: 68px;">
