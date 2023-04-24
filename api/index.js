@@ -906,7 +906,7 @@ app.delete("/rawmaterials", (req,res,next) => {
     });
 });
 
-aapp.delete("/unitofmeasure", (req,res,next) => {
+app.delete("/unitofmeasure", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strAbbreviation = req.query.abbreviation || req.body.abbreviation;
     let strDescription = req.query.description || req.body.description;
