@@ -605,7 +605,7 @@ app.put("/position", (req, res, next) => {
     });
   });
 
-});
+
 
   
   app.put("/harvests", (req, res, next) => {
