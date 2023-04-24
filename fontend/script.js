@@ -584,3 +584,91 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                     $(this).parent().parent().find(".tdAction").html(rowUpdateButtons4);
 
                 });
+
+            var emptyRow5 = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
+            var emptyNewRow5 = "<tr class='trNewRow'>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdProduct'>";
+            emptyNewRow5 = emptyNewRow5 + "        <input type='text' class='form-control txtProduct' placeholder='Enter a Product'/>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdUser'>";
+            emptyNewRow5 = emptyNewRow5 + "        <input type='text' class='form-control txtUser' placeholder='Enter a User'/>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdHarvestDateTime'>";
+            emptyNewRow5 = emptyNewRow5 + "        <input type='text' class='form-control txtHarvestDateTime' placeholder='Enter a Harvest Date Time'/>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdQuantity'>"; 
+            emptyNewRow5 = emptyNewRow5 + "        <input type='text' class='form-control txtQuantity' placeholder='Enter a Quantity'/>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdUnitOfMeasure'>";
+            emptyNewRow5 = emptyNewRow5 + "        <input type='text' class='form-control txtUnitOfMeasure' placeholder='Enter a Unit of Measure'/>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "    <td class='tdAction'>";
+            emptyNewRow5 = emptyNewRow5 + "        <button class='btn btn-sm btn-success btn-save'> Save</button>";
+            emptyNewRow5 = emptyNewRow5 + "        <button class='btn btn-sm btn-success btn-cancel'> Cancel</button>";
+            emptyNewRow5 = emptyNewRow5 + "    </td>";
+            emptyNewRow5 = emptyNewRow5 + "</tr>";
+
+            var rowButtons5 ="<button class='btn btn-success btn-sm btn-edit' > Edit </button>  <button class='btn btn-danger btn-sm' > Delete </button> ";
+            var rowUpdateButtons5 ="<button class='btn btn-success btn-sm btn-save' > Update </button>  <button class='btn btn-danger btn-sm btn-save' > Cancel </button> ";
+
+                $("#tblHarvests tbody").append(emptyRow5); // adding empty row on page load
+
+                $("#btnAddHarvests").click(function () {
+                    if ($("#tblHarvests tbody").children().children().length == 1) {
+                        $("#tblHarvests tbody").html("");
+                    }
+                    $("#tblHarvests tbody").append(emptyNewRow5); // appending dynamic string to table tbody
+                });
+
+                $('#tblHarvests').on('click', '.btn-save', function () {
+                    const product =  $(this).parent().parent().find(".txtProduct").val();
+                    $(this).parent().parent().find(".tdProduct").html(""+product+"");
+                    const user =  $(this).parent().parent().find(".txtUser").val();
+                    $(this).parent().parent().find(".tdUser").html(""+user+"");
+                    const harvestdatetime =  $(this).parent().parent().find(".txtHarvestDateTime").val();
+                    $(this).parent().parent().find(".tdHarvestDateTime").html(""+harvestdatetime+"");
+                    const quantity =  $(this).parent().parent().find(".txtQuantity").val();
+                    $(this).parent().parent().find(".tdQuantity").html(""+quantity+"");
+                    const unitofmeasure =  $(this).parent().parent().find(".txtUnitOfMeasure").val();
+                    $(this).parent().parent().find(".tdUnitOfMeasure").html(""+unitofmeasure+"");
+                    $(this).parent().parent().find(".tdAction").html(rowButtons5);
+                }
+                );
+
+                $('#tblHarvests').on('click', '.btn-danger', function () { // registering function for delete button
+                    $(this).parent().parent().remove();
+                    if ($("#tblHarvests tbody").children().children().length == 0) {
+                        $("#tblHarvests tbody").append(emptyRow5);
+                    }
+                });
+
+                $('#tblHarvests').on('click', '.btn-cancel', function () {
+                    $(this).parent().parent().remove();
+                }
+                );
+                $('#tblHarvests').on('click', '.btn-edit', function () {
+                  const product =$(this).parent().parent().find(".tdProduct").html();
+
+                  $(this).parent().parent().find(".tdProduct").html("<input type='text' value='"+product+"' class='form-control txtProduct' placeholder='Enter a Product'/>");
+
+                  const user =$(this).parent().parent().find(".tdUser").html();
+
+                  $(this).parent().parent().find(".tdUser").html("<input type='text' value='"+user+"' class='form-control txtUser' placeholder='Enter a User'/>");
+
+                  const harvestdatetime =$(this).parent().parent().find(".tdHarvestDateTime").html();
+
+                  $(this).parent().parent().find(".tdHarvestDateTime").html("<input type='text' value='"+harvestdatetime+"' class='form-control txtHarvestDateTime' placeholder='Enter a Harvest Date Time'/>");
+
+                  const quantity =$(this).parent().parent().find(".tdQuantity").html();
+
+                  $(this).parent().parent().find(".tdQuantity").html("<input type='text' value='"+quantity+"' class='form-control txtQuantity' placeholder='Enter a Quantity'/>");
+
+                  const unitofmeasure =$(this).parent().parent().find(".tdUnitOfMeasure").html();
+
+                  $(this).parent().parent().find(".tdUnitOfMeasure").html("<input type='text' value='"+unitofmeasure+"' class='form-control txtUnitOfMeasure' placeholder='Enter a Unit of Measure'/>");
+
+                  $(this).parent().parent().find(".tdAction").html(rowUpdateButtons5);
+
+              }
+              );
+
