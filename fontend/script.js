@@ -305,6 +305,29 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                 const effectiveDateTime =  $(this).parent().parent().find(".txtEffectiveDateTime").val();
                 $(this).parent().parent().find(".tdEffectiveDateTime").html(""+effectiveDateTime+"");
                 $(this).parent().parent().find(".tdAction").html(rowButtons);
+
+                /*$.post(strBaseURL + '/positions', {
+                  user: user,
+                  title: title,
+                  payrate: payrate,
+                  effectiveDateTime: effectiveDateTime,
+                }, function(result){
+                  console.log(result);
+                  if(result){  
+                    result = JSON.parse(result) 
+                    console.log(result);
+                    swal.fire({
+                      text: "You have successfully  added a new worker!",
+                      icon: 'success',
+                      confirmButtonText: 'OK'
+                    });
+                  } else{
+                    swal.fire({
+                      text: 'There was an error signing this. Please try again.',
+                      icon: 'error',
+                      confirmButtonText: 'OK'
+                    */ });
+
             });
              
             
