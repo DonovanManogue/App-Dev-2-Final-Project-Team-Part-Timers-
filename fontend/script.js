@@ -315,16 +315,14 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                 const farmID =  $(this).parent().parent().find(".txtFarmID").val();
                 $(this).parent().parent().find(".tdFarmID").html(""+farmID+"");
                 $(this).parent().parent().find(".tdAction").html(rowButtons);
-                const data = {
-                  "entryID": entryID,
-                  "user": user,
-                  "title": title,
-                  "payrate": payrate,
-                  "effectiveDateTime": effectiveDateTime,
-                  "farmID": farmID
-              };
              
-            $.post(strBaseURL+"/position", data, function(result) {
+                $.post(strBaseURL + '/position', {
+                  strEntry: entryID,
+                  strUser: user,
+                  strTitle: title,
+                  strPayRate: payrate,
+                  strEffectiveDateTime: effectiveDateTime,
+                }, function(result){
                 // handle response from the server }, function(result){
               console.log(result);
               if(result){  
@@ -358,7 +356,13 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                   "effectiveDateTime": effectiveDateTime,
                   "farmID": farmID
               };
-            $.delete(strBaseURL+"/position", data, function(result) {
+              $.delete(strBaseURL + '/position', {
+                strEntry: entryID,
+                strUser: user,
+                strTitle: title,
+                strPayRate: payrate,
+                strEffectiveDateTime: effectiveDateTime,
+              }, function(result){
               // handle response from the server }, function(result){
             console.log(result);
             if(result){  
@@ -383,9 +387,6 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                 $(this).parent().parent().remove();
             });
             $('#tblWorkers').on('click', '.btn-edit', function () { 
-                const entryID =$(this).parent().parent().find(".tdEntryID").html();
-
-                $(this).parent().parent().find(".tdEntryID").html("<input type='text' value='"+entryID+"' class='form-control txtEntryID' placeholder='Enter ID'/>");
 
                 const user =$(this).parent().parent().find(".tdUser").html();
 
@@ -404,11 +405,6 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                 const effectiveDateTime =$(this).parent().parent().find(".tdEffectiveDateTime").html();
 
                 $(this).parent().parent().find(".tdEffectiveDateTime").html("<input type='text' value='"+effectiveDateTime+"' class='form-control txtMobile' placeholder='Enter a Pay Rate'/>"); 
-
-                const farmID =$(this).parent().parent().find(".tdFarmID").html();
-
-                $(this).parent().parent().find(".tdFarmID").html("<input type='text' value='"+farmID+"' class='form-control txtMobile' placeholder='Enter a Pay Rate'/>");
-
 
                 $(this).parent().parent().find(".tdAction").html(rowUpdateButtons);
               
