@@ -127,6 +127,7 @@ app.post("/farms", (req,res,next) => {
         }
     });
 });
+
 app.post("/product",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = uuidv4();
@@ -325,8 +326,7 @@ app.post("/unitofmeasure", (req, res, next) => {
   
     getSessionDetails(strSessionID, function (objSession) {
       if (objSession) {
-        pool.query(
-          "INSERT INTO tblUnitOfMeasure (Abbreviation, Description, DateCreated, Status, CreatedBy, FarmID) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
+        pool.query("INSERT INTO tblUnitOfMeasure (Abbreviation, Description, DateCreated, Status, CreatedBy, FarmID) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
           [strAbbreviation, strDescription, strStatus, objSession.Email, objSession.Farm.FarmID],
           function (error, results) {
             if (!error) {
@@ -530,7 +530,7 @@ app.put("/farmassignment", (req,res,next) => {
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
             if(objSession.IsOwner == true){
-                pool.query("UPDATE tblFarmAssignment SET UserID = ? WHERE AssignmentID = ?",[strUser,strAssignmentID], function(error,results){
+                pool.query("UPDATE tblFarmAssignment SET UserID = ? WHERE AssignmentID = ?", [strUser, strAssignmentID], function(error, results){
                     if(!error){
                         let objMessage = new Message("Success","User Assigned to Farm");
                         res.status(200).send(objMessage)
@@ -576,7 +576,7 @@ app.put("/farms", (req,res,next) => {
     });
 });
 
-pp.put("/position", (req, res, next) => {
+app.put("/position", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strTitle = req.query.title || req.body.title;
     let strPayRate = req.query.payrate || req.body.payrate;
@@ -604,6 +604,9 @@ pp.put("/position", (req, res, next) => {
       }
     });
   });
+
+});
+
   
   app.put("/harvests", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -847,18 +850,19 @@ app.delete("/positions", (req,res,next) => {
     let strEffectiveDate = req.query.effectivedate || req.body.effectivedate;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-    pool.query("DELETE FROM tblPositions WHERE User = ?, Title = ?, PayRate = ?, EffectiveDate = ?",[strUser, strTitle, strPayRate, strEffectiveDate], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Position Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
+            pool.query("DELETE FROM tblPositions WHERE User = ?, Title = ?, PayRate = ?, EffectiveDate = ?",[strUser, strTitle, strPayRate, strEffectiveDate], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Position Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
         }
     });
-}
-    });
 });
+
 app.delete("/products", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = uuidv4();
@@ -867,19 +871,18 @@ app.delete("/products", (req,res,next) => {
     let strDescription = req.query.description || req.body.description;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-    pool.query("DELETE FROM tblProducts WHERE ProductID = ?, ShortName = ?, LongName = ?, Description = ?",[strProductID, strShortName, strLongName, strDescription], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Product Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
+            pool.query("DELETE FROM tblProducts WHERE ProductID = ?, ShortName = ?, LongName = ?, Description = ?",[strProductID, strShortName, strLongName, strDescription], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Product Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
         }
     });
-};
-    });
-
-
+});
 
 app.delete("/rawmaterials", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -891,57 +894,55 @@ app.delete("/rawmaterials", (req,res,next) => {
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
             pool.query("DELETE FROM tblRawMaterials WHERE MaterialID = ?, RelatedProduct = ?, Quantity = ?, UnitOfMeasure = ?, Cost = ?",[strMaterialID, strQuantity, strUnitOfMeasure, strCost, strRelatedProduct], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Raw Material Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
+                if(!error){
+                    let objMessage = new Message("Success","Raw Material Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
         }
     });
-};
-    });
+});
 
-  
-
-app.delete("/unitofmeasure", (req,res,next) => {
+aapp.delete("/unitofmeasure", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strAbbreviation = req.query.abbreviation || req.body.abbreviation;
     let strDescription = req.query.description || req.body.description;
     let strStatus = req.query.status || req.body.status;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-    pool.query("DELETE FROM tblUnitOfMeasure WHERE Abbreviation = ?, Description = ?, Status = ?",[strAbbreviation, strDescription, strStatus], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Unit of Measure Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
-        }
+            pool.query("DELETE FROM tblUnitOfMeasure WHERE Abbreviation = ?, Description = ?, Status = ?",[strAbbreviation, strDescription, strStatus], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Unit of Measure Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
+        };
     });
-};
-    });
-
+});
 
 app.delete("/taskslog", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strTask = req.query.task || req.body.task;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-    pool.query("DELETE FROM tblTasksLog WHERE Task = ?",[strTask], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Task Log Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
-        }
+            pool.query("DELETE FROM tblTasksLog WHERE Task = ?",[strTask], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Task Log Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
+        };
     });
-};
-    });
-
-
+});
 
 app.delete("/tasks", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -952,16 +953,17 @@ app.delete("/tasks", (req,res,next) => {
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
             pool.query("DELETE FROM tblTasks WHERE TaskID = ? AND TaskName = ? AND Note = ? AND Status = ?",[strTaskID, strTaskName, strNote, strStatus], function(error,results){
-        if(!error){
-            let objMessage = new Message("Success","Task Deleted");
-            res.status(202).send(objMessage)
-        } else {
-            let objError = new Message("Error",error);
-            res.status(400).send(objError);
-        }
+                if(!error){
+                    let objMessage = new Message("Success","Task Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
+        };
     });
-};
-    });
+});
 
 
 
