@@ -306,7 +306,7 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                 $(this).parent().parent().find(".tdEffectiveDateTime").html(""+effectiveDateTime+"");
                 $(this).parent().parent().find(".tdAction").html(rowButtons);
 
-                /*$.post(strBaseURL + '/positions', {
+                $.post(strBaseURL + '/positions', {
                   user: user,
                   title: title,
                   payrate: payrate,
@@ -326,9 +326,10 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
                       text: 'There was an error signing this. Please try again.',
                       icon: 'error',
                       confirmButtonText: 'OK'
-                    */ });
+                    });
 
-            });
+            };
+          });
              
             
             $('#tblWorkers').on('click', '.btn-danger', function () { // registering function for delete button  
@@ -694,4 +695,5 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
 
               }
               );
-
+            });
+            
