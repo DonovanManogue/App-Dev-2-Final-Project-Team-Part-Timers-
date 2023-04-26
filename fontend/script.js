@@ -202,7 +202,8 @@ $('#btnSignUp').on('click', function(){
       confirmButtonText: 'OK'
     });
   } else {
-    $.ajax({
+    // send ADD ON THE USER TABLE IN THE DATABASE ON MY LAPTOP A dateCreated TABLE
+    $.ajax({  
       url: strBaseURL+'/farms',
       method: 'POST',
       contentType: 'application/json',
