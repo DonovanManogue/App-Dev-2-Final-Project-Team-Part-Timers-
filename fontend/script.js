@@ -132,75 +132,51 @@ $("#linkHarvests").on('click', function() {
   $("#divHarvests").show(500);
 });
 $('#btnSignUpNext').on('click', function(){
-  var blnError = false;
-  var strHTML = '';
+  var hasError = false;
+  var errorMessage = '';
+  
   if($('#txtFirstName').val() == ''){
-    blnError = true;
-    strHTML += 'Please enter your first name.<br>';
+    hasError = true;
+    errorMessage += 'Please enter your first name.<br>';
   }
   if($('#txtLastName').val() == ''){
-    blnError = true;
-    strHTML += 'Please enter your last name.<br>';
+    hasError = true;
+    errorMessage += 'Please enter your last name.<br>';
   }
   if($('#txtEmail').val() == ''){
-    blnError = true;
-    strHTML += 'Please enter your email.<br>';
+    hasError = true;
+    errorMessage += 'Please enter your email.<br>';
   }
   if($('#txtPassword').val() == ''){
-    blnError = true;
-    strHTML += 'Please enter your password.<br>';
+    hasError = true;
+    errorMessage += 'Please enter your password.<br>';
   }
   if($('#txtPhoneNumber').val() == ''){
-    blnError = true;
-    strHTML += 'Please enter your phone number.<br>';
+    hasError = true;
+    errorMessage += 'Please enter your phone number.<br>';
   }
 
-  if(blnError == true){
+  if(hasError){
     swal.fire({
       text: 'Please correct the following errors:',
-      html: strHTML,
+      html: errorMessage,
       icon: 'error',
       confirmButtonText: 'OK'
     });
   } else { 
-    let strfirstName= $('#txtFirstName').val();
-    let strlastName= $('#txtLastName').val();
-    let strEmail= $('#txtEmail').val();
-    let strPassword= $('#txtPassword').val();
-    let strPhoneNumber= $('#txtPhoneNumber').val();
-    let strFARMID= $('#txtFARMID').val();
-    $.post(strBaseURL + '/users', {
-      firstName: strfirstName,
-      lastName: strlastName,
-      email: strEmail,
-      password: strPassword,
-      phoneNumber: strPhoneNumber
-    }, function(result){
-      console.log(result);
-      if(result){  
-        result = JSON.parse(result) 
-        console.log(result);
-        swal.fire({
-          text: "You have successfully gave your personal info, now it's time to add your farm!",
-          icon: 'success',
-          confirmButtonText: 'OK'
-        });
-      } else{
-        swal.fire({
-          text: 'There was an error signing up. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    });
-    $('#divSignUp').hide(500);
-    $('#divSignUp2').show(500);
+    // send POST request to server
+          $('#divSignUp').hide(500);{
+          $('#divSignUp2').show(500);
   }
+}
 });
-
 $('#btnSignUp').on('click', function(){
   var blnError = false;
   var strHTML = '';
+  if($('#txtFarmName').val() == ''){
+    blnError = true;
+    strHTML += 'Please enter your farm name.<br>';
+  }
   if($('#txtStreetAddress').val() == ''){
     blnError = true;
     strHTML += 'Please enter your street address.<br>';
@@ -213,7 +189,7 @@ $('#btnSignUp').on('click', function(){
     blnError = true;
     strHTML += 'Please enter your state.<br>';
   }
-  if($('#txtZipCode').val() == ''){
+  if($('#txtZip').val() == ''){
     blnError = true;
     strHTML += 'Please enter your zip code.<br>';
   }
@@ -226,43 +202,35 @@ $('#btnSignUp').on('click', function(){
       confirmButtonText: 'OK'
     });
   } else {
-    let strStreetAddress= $('#txtStreetAddress').val();
-    let strStreetAddress2= $('#txtStreetAddress2').val();
-    let strCity= $('#txtCity').val();
-    let strState= $('#txtState').val();
-    let strZipCode= $('#txtZipCode').val();
-
-    $.post(strBaseURL + '/farms', {
-      streetAddress: strStreetAddress,
-      streetAddress2: strStreetAddress2,
-      city: strCity,
-      state: strState,
-      zipCode: strZipCode,
-      FARMID: strFARMID
-    }, function(result){
-      console.log(result);
-      if(result){  
-        result = JSON.parse(result) 
-        console.log(result);
-        swal.fire({
-          text: 'You have successfully signed up!',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        });
-      } else{
-        swal.fire({
-          text: 'There was an error signing up. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
+    $.ajax({
+      url: strBaseURL+'/farms',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        streetaddress1:$('#txtStreetAddress').val(),
+        streetAddress2:$('#txtStreetAddress2').val(),
+        city:$('#txtCity').val(),
+        state:$('#txtState').val(),
+        zip:$('#txtZip').val(),
+        farmname:$('#txtFarmName').val(),
+        firstname:$('#txtFirstName').val(),
+        lastname:$('#txtLastName').val(),
+        email:$('#txtEmail').val(),
+        phonenumber:$('#txtPhoneNumber').val(),
+        password:$('#txtPassword').val()
+      }),
+      success: function(response) {
+        console.log(response);
+        $('#divSignUp2').hide(500);
+        $('#divLogin').show(500);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
       }
     });
-    $('#divLogin').show(500);
-    $('#divSignUp2').hide(500);
-  }
+}
 });
-});
-
+          
 var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
         var emptyNewRow = "<tr class='trNewRow'>"; 
         emptyNewRow = emptyNewRow + "    <td class='tdEntryID'>";
@@ -738,4 +706,6 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
 
               }
               );
+            });
+
 

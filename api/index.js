@@ -21,8 +21,8 @@ class Session {
         this.User = objUser;
         this.StartDateTime = datStartDateTime;
         this.LastUsedDateTime = datLastUsedDateTime;
-    };
-};
+    }
+}
 class User {
     constructor(strEmail,strFirstName,strLastName,strMobileNumber,objFarm,blnOwner){
         this.Email = strEmail;
@@ -31,8 +31,8 @@ class User {
         this.MobileNumber = strMobileNumber;
         this.Farm = objFarm;
         this.FarmOwner = blnOwner;
-    };
-};
+    }
+}
 
 
 class Farm {
@@ -44,15 +44,15 @@ class Farm {
         this.City = strCity;
         this.State = strState;
         this.ZIPCode = strZIP;
-    };
-};
+    }
+}
 
 class Message {
     constructor(strType,strMessage){
         this.Type = strType;
         this.Message = strMessage;
-    };
-};
+    }
+}
 // End Step One
 //Step Two
 var app = express();
@@ -74,27 +74,29 @@ app.listen(HTTP_PORT, () => {
 //End Step Three
 // Step Four Users
     app.post("/users", (req,res,next) => {
-    let strFirstName = req.query.firstname || req.body.firstname;
-    let strLastName = req.query.lastname || req.body.lastname;
-    let strPreferredName = req.query.preferredname || req.body.preferredname;
-    let strEmail = req.query.email || req.body.email;
-    let strPassword = req.query.password || req.body.password;
+        let strFirstName = req.body.firstname;
+        let strLastName = req.body.lastname;
+        let strEmail = req.body.email;
+        let strPhoneNumber = req.body.phonenumber;
+        let strPassword = req.body.password;   
+        console.log("Request body:", req.body);     
     // call the hash method of bcrypt against the password to encrypt and store with a salt
     // notice the use of .then as a promise due to it being async
     bcrypt.hash(strPassword, 10).then(hash => {
         strPassword = hash;
-        pool.query('INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())',[strEmail, strFirstName, strLastName, strPreferredName, strPassword], function(error, results){
+        pool.query('INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())',[ strFirstName, strLastName, strEmail,strPhoneNumber,strPassword], function(error, results){
             if(!error){
                 let objMessage = new Message("Success","New User Created");
                 res.status(201).send(objMessage);
             } else {
                 let objMessage = new Message("Error",error);
+                console.error(error);
                 res.status(400).send(objMessage);
             }
         })
     });
 });
-app.post("/farms", (req,res,next) => {
+app.post("/farms", (req,res) => {
     let strStreetAddress1 = req.query.streetaddress1 || req.body.streetaddress1;
     let strStreetAddress2 = req.query.streetaddress2 || req.body.streetaddress2;
     let strCity = req.query.city || req.body.city;
@@ -104,14 +106,14 @@ app.post("/farms", (req,res,next) => {
     let strFarmName = req.query.farmname || req.body.farmname;
     let strFirstName = req.query.firstname || req.body.firstname;
     let strLastName = req.query.lastname || req.body.lastname;
-    let strPreferredName = req.query.preferredname || req.body.preferredname;
     let strEmail = req.query.email || req.body.email;
+    let strPhoneNumber = req.query.phonenumber || req.body.phonenumber;
     let strPassword = req.query.password || req.body.password;
     pool.query("INSERT INTO tblFarms VALUES(?, ?, ?, ?, ?,?,?)",[strFarmID, strFarmName, strStreetAddress1, strStreetAddress2, strCity,strState,strZIP], function(error, results){
         if(!error){
             bcrypt.hash(strPassword, 10).then(hash => {
                 strPassword = hash;
-                pool.query("INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())",[strEmail, strFirstName, strLastName, strPreferredName, strPassword], function(error, results){
+                pool.query("INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())",[strEmail, strFirstName, strLastName, strPhoneNumber, strPassword], function(error, results){
                     if(!error){
                         let objMessage = new Message("FarmID",strFarmID);
                         res.status(201).send(objMessage);
@@ -128,7 +130,7 @@ app.post("/farms", (req,res,next) => {
     });
 });
 
-app.post("/product",(req,res,next)=> {
+app.post("/product",(req,res)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = uuidv4();
     let strShortName = req.query.shortname || req.body.shortname;
@@ -1018,7 +1020,7 @@ app.delete("/tasks", (req,res,next) => {
                 callback(null);
             }
         });
-    };
+    }
 // Example function using the async pool.query with a callback
 function getFarmByID(strFarmID,callback){
     pool.query("SELECT * FROM tblFarms WHERE FarmID = ?",[strFarmID], function(error, results){
@@ -1032,7 +1034,7 @@ function getFarmByID(strFarmID,callback){
           callback(null);
         }
     });
-};
+}
 function getFarmByUserID(strUserID,callback){
     pool.query("SELECT tblFarms.* FROM tblFarmAssignment LEFT JOIN tblFarm ON tblFarmAssignment.FarmID = tblFarm.FarmID WHERE User = ?",[strUserID], function(error, results){
         if(!error){
@@ -1044,8 +1046,8 @@ function getFarmByUserID(strUserID,callback){
         } else {
           callback(null);
         }
-    });
-};
+    })
+}
 function getUserBySessionID(strSessionID,callback){
     pool.query("SELECT * FROM tblUsers LEFT JOIN tblFarmAssignments ON tblUsers.Email = tblFarmAssingments.User LEFT JOIN tblFarms ON tblFarmAssignments.FarmID = tblFarms.FarmID WHERE Email = (SELECT UserID FROM tblSessions WHERE SessionID = ?)",[strSessionID], function(error, results){
         if(!error){
@@ -1058,5 +1060,5 @@ function getUserBySessionID(strSessionID,callback){
         } else {
           callback(null);
         }
-    });
-};
+    })
+}
