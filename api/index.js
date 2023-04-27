@@ -156,8 +156,8 @@ app.post("/farms", (req,res) => {
 
 
 app.post("/login", (req, res) => {
-    let strEmail = req.body.email;
-    let strPassword = req.body.password;
+    let strEmail = req.body.email || req.query.email;
+    let strPassword = req.body.password || req.query.password;
   
     pool.query('SELECT * FROM tblUsers WHERE email = ?', [strEmail], function(error, results) {
       if (error) {
@@ -172,19 +172,15 @@ app.post("/login", (req, res) => {
       }
   
       let user = results[0];
-  
-      bcrypt.compare(strPassword, user.password, function(err, result) {
-        if (err) {
+
+      bcrypt.compare(strPassword, user.Password, function(err, result) {
+        if (result != true) {
           let objMessage = new Message("Error", err.message);
           return res.status(500).send(objMessage);
         }
       
         console.log("Result of password comparison:", result);
       
-        if (!result) {
-          let objMessage = new Message("Error", "Invalid password");
-          return res.status(401).send(objMessage);
-        }
         var sessionID = uuidv4();
         var UserID = strEmail;
         var startDateTime = new Date();
@@ -197,9 +193,8 @@ app.post("/login", (req, res) => {
           }{
           if(!error){
                       // Return the session ID and user details to the client
-          let objMessage = new Message("Error", "Invalid password");
           var user = { email: strEmail };
-          return res.status(200).json({ message: objMessage, user: user });
+          return res.status(200).json({  user: user });
           }
         }
       });
