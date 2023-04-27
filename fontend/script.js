@@ -284,6 +284,25 @@ $('#btnSignUp').on('click', function(){
 
 
   $("#btnLogin").on('click', function() {
+    var blnError = false;
+    var strHTML = '';
+    if($('#txtLoginEmail').val() == ''){
+      blnError = true;
+      strHTML += 'Please an Email.<br>';
+    }
+    if($('#txtLoginPassword').val() == ''){
+      blnError = true;
+      strHTML += 'Please enter a Password.<br>';
+    }
+    if(blnError == true){
+      swal.fire({
+        text: 'Please correct the following errors:',
+        html: strHTML,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }else{
+      
     $.ajax({
       url: strBaseURL+'/login',
       type: 'POST',
@@ -326,12 +345,12 @@ $('#btnSignUp').on('click', function(){
       console.error('Error:', error);
       // Handle login errors here
       swal.fire({
-        title: 'Error',
-        text: 'Please enter the right Email and Password.',
-        icon: 'Error',
+        text: 'Please enter the correct email and password:',
+        icon: 'error',
         confirmButtonText: 'OK'})
     }
   });
+}
 });
 
 
