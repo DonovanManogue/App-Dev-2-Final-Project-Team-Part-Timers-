@@ -87,42 +87,6 @@ app.post('/sessions',function(req,res){
       }
     });
   });
-
-
-  app.post("/login", (req, res) => {
-    let strEmail = req.body.email;
-    let strPassword = req.body.password;
-  
-    pool.query('SELECT * FROM tblUsers WHERE email = ?', [strEmail], function(error, results) {
-      if (error) {
-        let objMessage = new Message("Error", error);
-        console.error(error);
-        return res.status(400).send(objMessage);
-      }
-  
-      if (results.length === 0) {
-        let objMessage = new Message("Error", "User not found");
-        return res.status(401).send(objMessage);
-      }
-  
-      let user = results[0];
-  
-      bcrypt.compare(strPassword, user.password, function(err, result) {
-        if (err) {
-          let objMessage = new Message("Error", err.message);
-          return res.status(500).send(objMessage);
-        }
-  
-        if (!result) {
-          let objMessage = new Message("Error", "Invalid password");
-          return res.status(401).send(objMessage);
-        }
-  
-        let objMessage = new Message("Success", "Login successful");
-        return res.status(200).send(objMessage);
-      });
-    });
-  });
   
   
     app.post("/users", (req,res,next) => {
@@ -150,7 +114,7 @@ app.post('/sessions',function(req,res){
 });
 
 let strFarmID = uuidv4();
-
+const  saltRounds = 10;
 app.post("/farms", (req,res) => {
     let strStreetAddress1 = req.query.streetaddress1 || req.body.streetaddress1;
     let strStreetAddress2 = req.query.streetaddress2 || req.body.streetaddress2;
@@ -166,9 +130,13 @@ app.post("/farms", (req,res) => {
     let strPassword = req.query.password || req.body.password;
     pool.query("INSERT INTO tblFarms VALUES(?, ?, ?, ?, ?,?,?)",[strFarmID, strFarmName, strStreetAddress1, strStreetAddress2, strCity,strState,strZIP], function(error, results){
         if(!error){
-            bcrypt.hash(strPassword, 10).then(hash => {
-                strPassword = hash;
-                pool.query("INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())",[strEmail, strFirstName, strLastName, strPhoneNumber, strPassword], function(error, results){
+            bcrypt.hash(strPassword, saltRounds, function(err, hash) {
+                if (err) {
+                  let objMessage = new Message("Error", err.message);
+                  console.error(err)
+                  return res.status(500).send(objMessage);
+                } else {
+                pool.query("INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())",[strEmail, strFirstName, strLastName, strPhoneNumber, hash], function(error, results){
                     if(!error){
                         let objMessage = new Message("FarmID",strFarmID);
                         res.status(201).send(objMessage);
@@ -177,13 +145,54 @@ app.post("/farms", (req,res) => {
                         res.status(400).send(objMessage);
                     }
                 })
-            })
+            }
+        });
         } else {
             let objMessage = new Message("Error",error);
             res.status(400).send(objMessage);
         }
     });
 });
+
+
+app.post("/login", (req, res) => {
+    let strEmail = req.body.email;
+    let strPassword = req.body.password;
+  
+    pool.query('SELECT * FROM tblUsers WHERE email = ?', [strEmail], function(error, results) {
+      if (error) {
+        let objMessage = new Message("Error", error);
+        console.error(error);
+        return res.status(400).send(objMessage);
+      }
+  
+      if (results.length === 0) {
+        let objMessage = new Message("Error", "User not found");
+        return res.status(401).send(objMessage);
+      }
+  
+      let user = results[0];
+  
+      bcrypt.compare(strPassword, user.password, function(err, result) {
+        if (err) {
+          let objMessage = new Message("Error", err.message);
+          return res.status(500).send(objMessage);
+        }
+      
+        console.log("Result of password comparison:", result);
+      
+        if (!result) {
+          let objMessage = new Message("Error", "Invalid password");
+          return res.status(401).send(objMessage);
+        }
+      
+        let session = new Session("some_session_id", user, new Date(), new Date());
+        let objMessage = new Message("Success", "Login successful", session);
+        return res.status(200).send(objMessage);
+      });
+    });
+  });
+  
 
 app.post("/product",(req,res)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;

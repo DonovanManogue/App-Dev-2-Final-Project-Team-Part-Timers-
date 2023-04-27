@@ -15,51 +15,6 @@ $("#btnSignUpGoBack").on('click', function() {
   $("#divSignUp").show(500);
   $("#divSignUp2").hide(500);
 });
-// Show the login div when the "Login" button is clicked
-$("#btnLogin").on('click', function() {
-  let email = $('#txtEmail').val();
-  let password = $('#txtPassword').val();
-
-  $.ajax({
-    url: strBaseURL+'/login',
-    type: 'POST',
-    data: JSON.stringify({ email: email, password: password }),
-    contentType: 'application/json',
-    success: function(data) {
-      if (data.type === 'Success') {
-        swal.fire({
-          title: 'Success!',
-          text: 'Login Successful!',
-          icon: 'success',
-          confirmButtonText: 'OK'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $("#divLogin").hide(1000);
-            $("#divSignUp").hide(1000);
-            $("#navMain").show(1000);
-            $("#divHome").show(1000);
-            $("#divFirstBackground").hide(1000);
-            $("#divSecondBackground").show(1000);
-            $("#divSlogan").hide(1000);
-            $("#divSlogan2").hide(1000);
-          }
-        });
-      } else {
-        swal.fire({
-          title: 'Error',
-          text: 'Invalid email or password.',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-      }
-    },
-    error: function(error) {
-      console.error(error);
-      // show an error message to the user
-    }
-  });
-});
-
 
 
 
@@ -258,29 +213,93 @@ $('#btnSignUp').on('click', function(){
       }),
       success: function(response) {
         console.log(response);
+        swal.fire({
+          title: 'Success',
+          text: 'Sign Up Success.',
+          icon: 'success',
+          confirmButtonText: 'OK'})
+          .then(function() {
         $('#divSignUp2').hide(500);
         $('#divLogin').show(500);
+          });
       },
       error: function(jqXHR, textStatus, errorThrown) {
         console.error(errorThrown);
+        swal.fire({
+          title: 'Error',
+          text: 'Sign Up Error.',
+          icon: 'error',
+          confirmButtonText: 'OK'})
       }
     });
   }
 });
 
+// Show the login div when the "Login" button is clicked
+/*$("#btnLogin").on('click', function() {
+  $.ajax({
+    url: strBaseURL+'/login',
+    type: 'POST',
+    data: JSON.stringify({ email:$('#txtEmail').val(), password: $('#txtPassword').val() }),
+    contentType: 'application/json',
+    // on successful login
+    success: function(response) {
+      console.log('Login successful:', response);
+      if (response = 'Login successful:') {
+        objSession = data.session;
+        
+        // hide the login and signup divs
 
-/*function retrieveWorkers() {
-  $.get(strBaseURL+'/position')
-    .done(function(data) {
-      data.forEach(function(worker) {
-        $('#workersTable tbody').append('<tr><td>' + worker.name + '</td><td>' + worker.title +
-          '</td><td>' + worker.payRate + '</td><td>' + worker.effectiveDateTime + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
-      });
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-      console.error('Error retrieving workers:', textStatus, errorThrown);
+        $("#divLogin").hide(1000);
+        $("#divSignUp").hide(1000);
+    
+        // show the main navigation and home divs
+        $("#navMain").show(1000);
+        $("#divHome").show(1000);
+    
+        // hide or show any other divs you need to
+        $("#divFirstBackground").hide(1000);
+        $("#divSecondBackground").show(1000);
+        $("#divSlogan").hide(1000);
+        $("#divSlogan2").hide(1000);
+
+      } else {
+        swal.fire({
+          title: 'Error',
+          text: 'Invalid email or password.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+
+    },
+    error: function(error) {
+      console.error(error);
+      // show an error message to the user
+    }
+  });
+});*/
+$("#btnLogin").on('click', function() {
+  swal.fire({
+    title: 'Success',
+    text: 'Login Success.',
+    icon: 'success',
+    confirmButtonText: 'OK'})
+    .then(function() {
+      $("#divLogin").hide(1000);
+      $("#divSignUp").hide(1000);
+  
+      // show the main navigation and home divs
+      $("#navMain").show(1000);
+      $("#divHome").show(1000);
+  
+      // hide or show any other divs you need to
+      $("#divFirstBackground").hide(1000);
+      $("#divSecondBackground").show(1000);
+      $("#divSlogan").hide(1000);
+      $("#divSlogan2").hide(1000);
     });
-} */
+  });
 
 $(document).ready(function() {
 
