@@ -17,15 +17,51 @@ $("#btnSignUpGoBack").on('click', function() {
 });
 // Show the login div when the "Login" button is clicked
 $("#btnLogin").on('click', function() {
-  $("#divLogin").hide(1000);
-  $("#divSignUp").hide(1000);
-  $("#navMain").show(1000);
-  $("#divHome").show(1000);
-  $("#divFirstBackground").hide(1000);
-  $("#divSecondBackground").show(1000);
-  $("#divSlogan").hide(1000);
-  $("#divSlogan2").hide(1000);
+  let email = $('#txtEmail').val();
+  let password = $('#txtPassword').val();
+
+  $.ajax({
+    url: strBaseURL+'/login',
+    type: 'POST',
+    data: JSON.stringify({ email: email, password: password }),
+    contentType: 'application/json',
+    success: function(data) {
+      if (data.type === 'Success') {
+        swal.fire({
+          title: 'Success!',
+          text: 'Login Successful!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $("#divLogin").hide(1000);
+            $("#divSignUp").hide(1000);
+            $("#navMain").show(1000);
+            $("#divHome").show(1000);
+            $("#divFirstBackground").hide(1000);
+            $("#divSecondBackground").show(1000);
+            $("#divSlogan").hide(1000);
+            $("#divSlogan2").hide(1000);
+          }
+        });
+      } else {
+        swal.fire({
+          title: 'Error',
+          text: 'Invalid email or password.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    },
+    error: function(error) {
+      console.error(error);
+      // show an error message to the user
+    }
+  });
 });
+
+
+
 
 $("#linkLogout").on('click', function() {
   $("#divLogin").show(1000);
@@ -203,7 +239,7 @@ $('#btnSignUp').on('click', function(){
     });
   } else {
     // send ADD ON THE USER TABLE IN THE DATABASE ON MY LAPTOP A dateCreated TABLE
-    $.ajax({  
+    $.ajax({
       url: strBaseURL+'/farms',
       method: 'POST',
       contentType: 'application/json',
@@ -229,155 +265,108 @@ $('#btnSignUp').on('click', function(){
         console.error(errorThrown);
       }
     });
-}
+  }
 });
-          
-var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
-        var emptyNewRow = "<tr class='trNewRow'>"; 
-        emptyNewRow = emptyNewRow + "    <td class='tdEntryID'>";
-        emptyNewRow = emptyNewRow + "        <input type='hidden' class='form-control txtEntryID' value='0' />";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "    <td class='tdUser'>";
-        emptyNewRow = emptyNewRow + "        <input type='text' class='form-control txtUser' placeholder='Enter Name'/>";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "    <td class='tdTitle'>";
-        emptyNewRow = emptyNewRow + "        <input type='text' class='form-control txtTitle' placeholder='Enter Title'/>";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "    <td class='tdPayRate'>";
-        emptyNewRow = emptyNewRow + "        <input type='text' class='form-control txtPayRate' placeholder='Enter Pay Rate'/>";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "    <td class='tdEffectiveDateTime'>";
-        emptyNewRow = emptyNewRow + "        <input type='text' class='form-control txtEffectiveDateTime' placeholder='Enter Date'/>";
-        emptyNewRow = emptyNewRow + "    </td>";  
-        emptyNewRow = emptyNewRow + "    <td class='tdFarmID'>";
-        emptyNewRow = emptyNewRow + "        <input type='hidden' class='form-control txtEntryID' value='0' />";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "    <td class='tdAction'>";
-        emptyNewRow = emptyNewRow + "        <button class='btn btn-sm btn-success btn-save'> Save</button>";
-        emptyNewRow = emptyNewRow + "        <button class='btn btn-sm btn-success btn-cancel'> Cancel</button>";
-        emptyNewRow = emptyNewRow + "    </td>";
-        emptyNewRow = emptyNewRow + "</tr>";
-
-        var rowButtons ="<button class='btn btn-success btn-sm btn-edit' > Edit </button>  <button class='btn btn-danger btn-sm' > Delete </button> ";
-        var rowUpdateButtons ="<button class='btn btn-success btn-sm btn-save' > Update </button>  <button class='btn btn-danger btn-sm btn-save' > Cancel </button> ";
-
-            $("#tblWorkers tbody").append(emptyRow); // adding empty row on page load 
-            
-            $("#btnAddWorkers").click(function () { 
-                if ($("#tblWorkers tbody").children().children().length == 1) {
-                    $("#tblWorkers tbody").html("");
-                }
-                $("#tblWorkers tbody").append(emptyNewRow); // appending dynamic string to table tbody
-            });
-            
-            $('#tblWorkers').on('click', '.btn-save', function () {
-                const entryID =  $(this).parent().parent().find(".txtEntryID").val();
-                $(this).parent().parent().find(".tdEntryID").html(""+entryID+"");
-                const user =  $(this).parent().parent().find(".txtUser").val();
-                $(this).parent().parent().find(".tdUser").html(""+user+""); 
-                const title =  $(this).parent().parent().find(".txtTitle").val();
-                $(this).parent().parent().find(".tdTitle").html(""+title+"");
-                const payrate =  $(this).parent().parent().find(".txtPayRate").val();
-                $(this).parent().parent().find(".tdPayRate").html(""+payrate+"");
-                const effectiveDateTime =  $(this).parent().parent().find(".txtEffectiveDateTime").val();
-                $(this).parent().parent().find(".tdEffectiveDateTime").html(""+effectiveDateTime+"");
-                const farmID =  $(this).parent().parent().find(".txtFarmID").val();
-                $(this).parent().parent().find(".tdFarmID").html(""+farmID+"");
-                $(this).parent().parent().find(".tdAction").html(rowButtons);
-             
-                $.post(strBaseURL + '/position', {
-                  strEntry: entryID,
-                  strUser: user,
-                  strTitle: title,
-                  strPayRate: payrate,
-                  strEffectiveDateTime: effectiveDateTime,
-                }, function(result){
-                // handle response from the server }, function(result){
-              console.log(result);
-              if(result){  
-                result = JSON.parse(result) 
-                console.log(result);
-                swal.fire({
-                  text: "You have successfully added a new worker!",
-                  icon: 'success',
-                  confirmButtonText: 'OK'
-                });
-              } else{
-                swal.fire({
-                  text: 'There was an error signing up a new worker. Please try again.',
-                  icon: 'error',
-                  confirmButtonText: 'OK'
-                });
-              }
-            });
-          });
-
-            $('#tblWorkers').on('click', '.btn-danger', function () { // registering function for delete button  
-                $(this).parent().parent().remove();
-                if ($("#tblWorkers tbody").children().children().length == 0) {
-                    $("#tblWorkers tbody").append(emptyRow);
-                }
-                const data = {
-                  "entryID": entryID,
-                  "user": user,
-                  "title": title,
-                  "payrate": payrate,
-                  "effectiveDateTime": effectiveDateTime,
-                  "farmID": farmID
-              };
-              $.delete(strBaseURL + '/position', {
-                strEntry: entryID,
-                strUser: user,
-                strTitle: title,
-                strPayRate: payrate,
-                strEffectiveDateTime: effectiveDateTime,
-              }, function(result){
-              // handle response from the server }, function(result){
-            console.log(result);
-            if(result){  
-              result = JSON.parse(result) 
-              console.log(result);
-              swal.fire({
-                text: "You have successfully deleted a worker!",
-                icon: 'success',
-                confirmButtonText: 'OK'
-              });
-            } else{
-              swal.fire({
-                text: 'There was an error deleting worker. Please try again.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-              });
-            }
-          });
-        });
-
-            $('#tblWorkers').on('click', '.btn-cancel', function () { 
-                $(this).parent().parent().remove();
-            });
-            $('#tblWorkers').on('click', '.btn-edit', function () { 
-
-                const user =$(this).parent().parent().find(".tdUser").html();
-
-                $(this).parent().parent().find(".tdUser").html("<input type='text' value='"+user+"' class='form-control txtName' placeholder='Enter Name'/>"); 
 
 
-                const title =$(this).parent().parent().find(".tdtitle").html();
+/*function retrieveWorkers() {
+  $.get(strBaseURL+'/position')
+    .done(function(data) {
+      data.forEach(function(worker) {
+        $('#workersTable tbody').append('<tr><td>' + worker.name + '</td><td>' + worker.title +
+          '</td><td>' + worker.payRate + '</td><td>' + worker.effectiveDateTime + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
+      });
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+      console.error('Error retrieving workers:', textStatus, errorThrown);
+    });
+} */
 
-                $(this).parent().parent().find(".tdTitle").html("<input type='text' value='"+title+"' class='form-control txtCity' placeholder='Enter Title'/>"); 
+$(document).ready(function() {
 
+  //retrieveWorkers();
 
-                const payrate =$(this).parent().parent().find(".tdPayRate").html();
+  $('#addWorkerForm').submit(function(event) {
+    event.preventDefault();
+    var workerName = $('#workerName').val();
+    var workerTitle = $('#workerTitle').val();
+    var workerPay = $('#workerPay').val();
+    var workerDate = $('#workerDate').val();
 
-                $(this).parent().parent().find(".tdPayrate").html("<input type='text' value='"+payrate+"' class='form-control txtMobile' placeholder='Enter a Pay Rate'/>"); 
+    $.ajax({  
+      url: strBaseURL + '/position',
+      method: 'POST',
+      data: JSON.stringify({
+        user: $('#workerName').val(),
+        title: $('#workerTitle').val(),
+        payrate: $('#workerPay').val(),
+        effectivedate: $('#workerDate').val()
+      }),
+      success: function(response) {
+        console.log('Workewr added:', response);
+        $('#workersTable tbody').append('<tr><td>' + workerName + '</td><td>' + workerTitle +
+        '</td><td>' + workerPay + '</td><td>' + workerDate + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
+      $('#addWorkerModal').modal('hide');
+      $('#addWorkerForm')[0].reset();
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
+      }
+    });
+});
+  
 
-                const effectiveDateTime =$(this).parent().parent().find(".tdEffectiveDateTime").html();
+  /// Open edit modal when edit button is clicked
+$('#workersTable').on('click', '.editButton', function() {
+  var currentRow = $(this).closest('tr');
+  var workerName = currentRow.find('td:first').text();
+  var workerTitle = currentRow.find('td:eq(1)').text();
+  var workerPay = currentRow.find('td:eq(2)').text();
+  var workerDate = currentRow.find('td:eq(3)').text();
+  $('#editWorkerModal #editWorkerName').val(workerName);
+  $('#editWorkerModal #editWorkerTitle').val(workerTitle);
+  $('#editWorkerModal #editWorkerPay').val(workerPay);
+  $('#editWorkerModal #editWorkerDate').val(workerDate);
+  $('#editWorkerModal #editIndex').val(currentRow.index());
+  $('#editWorkerModal').modal('show');
+});
 
-                $(this).parent().parent().find(".tdEffectiveDateTime").html("<input type='text' value='"+effectiveDateTime+"' class='form-control txtMobile' placeholder='Enter a Pay Rate'/>"); 
+// Save changes when edit form is submitted
+$('#editWorkerModal #editWorkerForm').submit(function(event) {
+  event.preventDefault();
+  var workerName = $('#editWorkerModal #editWorkerName').val();
+  var workerTitle = $('#editWorkerModal #editWorkerTitle').val();
+  var workerPay = $('#editWorkerModal #editWorkerPay').val();
+  var workerDate = $('#editWorkerModal #editWorkerDate').val();
+  var currentRow = $('#workersTable tbody tr:eq(' + $('#editWorkerModal #editIndex').val() + ')');
+  currentRow.find('td:first').text(workerName);
+  currentRow.find('td:eq(1)').text(workerTitle);
+  currentRow.find('td:eq(2)').text(workerPay);
+  currentRow.find('td:eq(3)').text(workerDate);
+  $('#editWorkerModal').modal('hide');
+});
 
-                $(this).parent().parent().find(".tdAction").html(rowUpdateButtons);
-              
-            });
+ // Open delete modal when delete button is clicked
+$('#workersTable').on('click', '.deleteButton', function() {
+  var currentRow = $(this).closest('tr');
+  $('#deleteWorkerModal #deleteIndex').val(currentRow.index());
+  $('#deleteWorkerModal').modal('show');
+  });
+  
+  // Delete worker when delete button is clicked in delete modal
+  $('#deleteButton').click(function() {
+  var deleteIndex = $('#deleteWorkerModal #deleteIndex').val();
+  var currentRow = $('#workersTable tbody tr:eq(' + deleteIndex + ')');
+  currentRow.remove();
+  $('#deleteWorkerModal').modal('hide');
+  });
+  
+  // Clear input fields on modal dismiss
+  $('#addWorkerModal, #editWorkerModal').on('hidden.bs.modal', function() {
+  $(this).find('form')[0].reset();
+  });
+});
+
 
         var emptyRow2 = "<tr><td colspan='4' class='text-center'> No Records Available</td></tr>";
         var emptyNewRow2 = "<tr class='trNewRow'>"; 
@@ -707,6 +696,6 @@ var emptyRow = "<tr><td colspan='4' class='text-center'> No Records Available</t
 
               }
               );
-            });
+            }); // end of document ready function
 
 
