@@ -185,14 +185,27 @@ app.post("/login", (req, res) => {
           let objMessage = new Message("Error", "Invalid password");
           return res.status(401).send(objMessage);
         }
+        var sessionID = uuidv4();
+        var UserID = strEmail;
+        var startDateTime = new Date();
       
-        let session = new Session("some_session_id", user, new Date(), new Date());
-        let objMessage = new Message("Success", "Login successful", session);
-        return res.status(200).send(objMessage);
+        pool.query('INSERT INTO tblSessions VALUES (?, ?, ?)', [sessionID, UserID, startDateTime], function(error, results) {
+          if (error) {
+            console.error(error);
+            var objMessage = new Message('Error', error.message);
+            return res.status(500).json(objMessage);
+          }{
+          if(!error){
+                      // Return the session ID and user details to the client
+          let objMessage = new Message("Error", "Invalid password");
+          var user = { email: strEmail };
+          return res.status(200).json({ message: objMessage, user: user });
+          }
+        }
       });
     });
-  });
-  
+    });
+    });
 
 app.post("/product",(req,res)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;

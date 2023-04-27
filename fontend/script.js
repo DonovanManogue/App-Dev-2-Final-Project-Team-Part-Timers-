@@ -280,12 +280,29 @@ $('#btnSignUp').on('click', function(){
   });
 });*/
 $("#btnLogin").on('click', function() {
+  $("#btnLogin").on('click', function() {
+    $.ajax({
+      url: strBaseURL+'/login',
+      type: 'POST',
+      data: { email: $('#txtLoginEmail').val(), password: $('#txtLoginPassword').val() },
+      success: function(response) {
+        console.log('Login successful:', response);  
   swal.fire({
     title: 'Success',
     text: 'Login Success.',
     icon: 'success',
     confirmButtonText: 'OK'})
     .then(function() {
+      var session = {
+        sessionID: response.sessionID,
+        user: { ...response.user },
+        startDateTime: new Date()
+      };
+      console.log(session);
+
+      // Store the session in local storage
+      localStorage.setItem('session', JSON.stringify(session));
+
       $("#divLogin").hide(1000);
       $("#divSignUp").hide(1000);
   
@@ -299,7 +316,19 @@ $("#btnLogin").on('click', function() {
       $("#divSlogan").hide(1000);
       $("#divSlogan2").hide(1000);
     });
+    },
+    error: function(error) {
+      console.error('Error:', error);
+      // Handle login errors here
+      swal.fire({
+        title: 'Error',
+        text: 'Please enter the right Email and Password.',
+        icon: 'Error',
+        confirmButtonText: 'OK'})
+    }
   });
+});
+});
 
 $(document).ready(function() {
 
