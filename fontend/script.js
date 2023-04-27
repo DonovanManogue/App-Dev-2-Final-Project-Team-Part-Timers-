@@ -279,7 +279,10 @@ $('#btnSignUp').on('click', function(){
     }
   });
 });*/
-$("#btnLogin").on('click', function() {
+
+
+
+
   $("#btnLogin").on('click', function() {
     $.ajax({
       url: strBaseURL+'/login',
@@ -294,14 +297,16 @@ $("#btnLogin").on('click', function() {
     confirmButtonText: 'OK'})
     .then(function() {
       var session = {
-        sessionID: response.sessionID,
+        sessionID:response.sessionID,
         user: { ...response.user },
         startDateTime: new Date()
       };
-      console.log(session);
+ console.log(session);
+
 
       // Store the session in local storage
       localStorage.setItem('session', JSON.stringify(session));
+      
 
       $("#divLogin").hide(1000);
       $("#divSignUp").hide(1000);
@@ -328,11 +333,12 @@ $("#btnLogin").on('click', function() {
     }
   });
 });
-});
+
 
 $(document).ready(function() {
 
-  //retrieveWorkers();
+  // Check if there is a session in local storage
+  
 
   $('#addWorkerForm').submit(function(event) {
     event.preventDefault();
@@ -345,6 +351,7 @@ $(document).ready(function() {
       url: strBaseURL + '/position',
       method: 'POST',
       data: JSON.stringify({
+        sessionID: sessionID,
         user: $('#workerName').val(),
         title: $('#workerTitle').val(),
         payrate: $('#workerPay').val(),
