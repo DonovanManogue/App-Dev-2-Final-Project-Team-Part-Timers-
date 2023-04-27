@@ -1,4 +1,5 @@
-var strBaseURL = 'http://localhost:8000'
+
+var strBaseURL = 'http://localhost:8000';
 $(document).ready(function() {
 
 // Show the sign up div when the "I Don't Have an Account" button is clicked
@@ -308,23 +309,17 @@ $('#btnSignUp').on('click', function(){
       type: 'POST',
       data: { email: $('#txtLoginEmail').val(), password: $('#txtLoginPassword').val() },
       success: function(response) {
-        console.log('Login successful:', response);  
-  swal.fire({
-    title: 'Success',
-    text: 'Login Success.',
-    icon: 'success',
-    confirmButtonText: 'OK'})
-    .then(function() {
-      var session = {
-        sessionID:response.sessionID,
-        user: { ...response.user },
-        startDateTime: new Date()
-      };
- console.log(session);
+        sessionStorage.setItem('session',response.SessionID);
+        swal.fire({
+          title: 'Success',
+          text: 'Login Success.',
+          icon: 'success',
+          confirmButtonText: 'OK'})
+          
+    
 
 
       // Store the session in local storage
-      localStorage.setItem('session', JSON.stringify(session));
       
 
       $("#divLogin").hide(1000);
@@ -339,7 +334,6 @@ $('#btnSignUp').on('click', function(){
       $("#divSecondBackground").show(1000);
       $("#divSlogan").hide(1000);
       $("#divSlogan2").hide(1000);
-    });
     },
     error: function(error) {
       console.error('Error:', error);
@@ -356,30 +350,37 @@ $('#btnSignUp').on('click', function(){
 
 $(document).ready(function() {
 
-  // Check if there is a session in local storage
-  
-
   $('#addWorkerForm').submit(function(event) {
     event.preventDefault();
+    let strSessionID = sessionStorage.getItem('SimpleFarmSession');
     var workerName = $('#workerName').val();
     var workerTitle = $('#workerTitle').val();
     var workerPay = $('#workerPay').val();
     var workerDate = $('#workerDate').val();
+    function uuidv4() {
+      // Generate and return a UUID v4 string
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+    const entryID = uuidv4();
 
     $.ajax({  
       url: strBaseURL + '/position',
       method: 'POST',
-      data: JSON.stringify({
-        sessionID: sessionID,
+      data: {
+        entry: entryID,
         user: $('#workerName').val(),
         title: $('#workerTitle').val(),
         payrate: $('#workerPay').val(),
-        effectivedate: $('#workerDate').val()
-      }),
+        effectivedate: $('#workerDate').val(),
+        sessionid: sessionStorage.getItem('session')
+      },
       success: function(response) {
-        console.log('Workewr added:', response);
-        $('#workersTable tbody').append('<tr><td>' + workerName + '</td><td>' + workerTitle +
-        '</td><td>' + workerPay + '</td><td>' + workerDate + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
+        console.log('Worker added:', response);
+        $('#workersTable tbody').append('<tr><td>'+ entryID +'</td><td>' + workerName + '</td><td>' + workerTitle +
+        '</td><td>' + workerPay + '</td><td>' + workerDate + '</td><td>' + response.FarmID + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
       $('#addWorkerModal').modal('hide');
       $('#addWorkerForm')[0].reset();
       },

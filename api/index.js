@@ -123,35 +123,48 @@ app.post("/farms", (req,res) => {
     let strZIP = req.query.zip || req.body.zip;
     let strFarmID = uuidv4();
     let strFarmName = req.query.farmname || req.body.farmname;
-    let strFirstName = req.query.firstname || req.body.firstname;
-    let strLastName = req.query.lastname || req.body.lastname;
-    let strEmail = req.query.email || req.body.email;
-    let strPhoneNumber = req.query.phonenumber || req.body.phonenumber;
-    let strPassword = req.query.password || req.body.password;
-    pool.query("INSERT INTO tblFarms VALUES(?, ?, ?, ?, ?,?,?)",[strFarmID, strFarmName, strStreetAddress1, strStreetAddress2, strCity,strState,strZIP], function(error, results){
-        if(!error){
-            bcrypt.hash(strPassword, saltRounds, function(err, hash) {
-                if (err) {
-                  let objMessage = new Message("Error", err.message);
-                  console.error(err)
-                  return res.status(500).send(objMessage);
-                } else {
-                pool.query("INSERT INTO tblUsers VALUES(?, ?, ?, ?, ?,SYSDATE())",[strEmail, strFirstName, strLastName, strPhoneNumber, hash], function(error, results){
-                    if(!error){
-                        let objMessage = new Message("FarmID",strFarmID);
-                        res.status(201).send(objMessage);
-                    } else {
-                        let objMessage = new Message("Error",error);
-                        res.status(400).send(objMessage);
-                    }
-                })
-            }
-        });
+  let strFirstName = req.query.firstname || req.body.firstname;
+  let strLastName = req.query.lastname || req.body.lastname;
+  let strEmail = req.query.email || req.body.email;
+  let strPhoneNumber = req.query.phonenumber || req.body.phonenumber;
+  let strPassword = req.query.password || req.body.password;
+
+  pool.query("INSERT INTO tblFarms VALUES (?, ?, ?, ?, ?, ?, ?)", [strFarmID, strFarmName, strStreetAddress1, strStreetAddress2, strCity, strState, strZIP], function(error1, results1){
+    if (!error1) {
+      bcrypt.hash(strPassword, saltRounds, function(err, hash) {
+        if (err) {
+          let objMessage = new Message("Error", err.message);
+          console.error(err);
+          return res.status(500).send(objMessage);
         } else {
-            let objMessage = new Message("Error",error);
-            res.status(400).send(objMessage);
+          pool.query("INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, SYSDATE())", [strEmail, strFirstName, strLastName, strPhoneNumber, hash], function(error2, results2) {
+            if (!error2) {
+              let objMessage = new Message("FarmID", strFarmID);
+              res.status(201).send(objMessage);
+              
+              const AssignmentID = uuidv4(); // Generate unique AssignmentID
+              const IsOwner = 1; // Set to 1 for owner, otherwise 0
+              pool.query("INSERT INTO tblFarmAssignment VALUES(?, ?, ?, ?)", [AssignmentID, strFarmID, strEmail, IsOwner], function(error3, results3) {
+                if (error3) {
+                  console.error(error3);
+                  let objMessage = new Message('Error', error3.message);
+                  return res.status(500).send(objMessage);
+                }
+              });
+            } else {
+              let objMessage = new Message("Error", error2);
+              console.error(error2);
+              res.status(400).send(objMessage);
+            }
+          });
         }
-    });
+      });
+    } else {
+      let objMessage = new Message("Error", error1);
+      console.error(error1);
+      res.status(400).send(objMessage);
+    }
+  });
 });
 
 
@@ -193,14 +206,49 @@ app.post("/login", (req, res) => {
           }{
           if(!error){
                       // Return the session ID and user details to the client
-          var user = { email: strEmail };
-          return res.status(200).json({  user: user });
+          return res.status(200).json({"SessionID": sessionID});
           }
         }
       });
     });
     });
     });
+
+
+    app.post("/position",(req,res,next)=> {
+        let strSessionID = req.query.sessionid || req.body.sessionid;
+        //let strEntry = req.query.entry || req.body.entry;
+        let strEntry = uuidv4();
+        let strUser = req.query.user || req.body.user;
+        let strTitle = req.query.title || req.body.title;
+        let strPayRate = req.query.payrate || req.body.payrate;
+        let strEffectiveDate = req.query.effectivedate || req.body.effectivedate;
+        console.log(strSessionID)
+        getSessionDetails(strSessionID, function(objSession) {
+            console.log("objSession: ", objSession);
+            if (objSession && objSession.User !== undefined) { // Add null/undefined check
+                console.log("objSession.User: ", objSession.User);
+                    pool.query("INSERT INTO tblPosition VALUES(?, ?, ?, ?, ?, ?)", 
+                    [strEntry,strUser, strTitle, strPayRate, strEffectiveDate, objSession.Farm.FarmID], 
+                    function(error, results) {
+                       if(!error) {
+                           let objMessage = new Message("PositionID",strEntry);
+                           res.status(201).send(objMessage);
+                       } else {
+                           let objMessage = new Message("Error",error);
+                           res.status(400).send(objMessage);
+                       }
+                    }
+                  )
+               
+            } else {
+                let objError = new Message("Error","Bad Session");
+                res.status(401).send(objError);
+            }
+            
+        });
+    });
+    
 
 app.post("/product",(req,res)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -330,42 +378,6 @@ app.post("/farmassignment",(req,res,next)=> {
     }
   });
   
-});
-app.post("/position",(req,res,next)=> {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strEntry = uuidv4();
-    let strTitle = req.query.title || req.body.title;
-    let strPayRate = req.query.payrate || req.body.payrate;
-    let strEffectiveDate = req.query.effectivedate || req.body.effectivedate;
-    
-    getSessionDetails(strSessionID, function(objSession) {
-        console.log("objSession: ", objSession);
-        if (objSession && objSession.User !== undefined) { // Add null/undefined check
-            console.log("objSession.User: ", objSession.User);
-            if(objSession.IsOwner == true){
-                pool.query("INSERT INTO tblPosition VALUES(?, ?, ?, ?, ?, ?)", 
-                [strEntry,objSession.User.UserID, strTitle, strPayRate, strEffectiveDate, objSession.Farm.FarmID], 
-                function(error, results) {
-                   if(!error) {
-                       let objMessage = new Message("PositionID",strEntry);
-                       res.status(201).send(objMessage);
-                   } else {
-                       let objMessage = new Message("Error",error);
-                       res.status(400).send(objMessage);
-                   }
-                }
-              )
-            }
-            else {
-                let objError = new Message("Error","Only Owners Are Authorized For This Function ");
-                res.status(401).send(objError);
-            }
-        } else {
-            let objError = new Message("Error","Bad Session");
-            res.status(401).send(objError);
-        }
-        
-    });
 });
 
 
@@ -1075,7 +1087,8 @@ app.delete("/tasks", (req,res,next) => {
     function getSessionDetails(strSessionID, callback) {
         pool.query("SELECT * FROM tblSessions LEFT JOIN tblUsers ON tblSessions.UserID = tblUsers.Email WHERE SessionID = ?", [strSessionID], function (error, results) {
           if (!error && results.length > 0) {
-            let objUser = new User(results[0].Email, results[0].FirstName, results[0].LastName, results[0].MobileNumber, null, results[0].IsOwner);
+            let objFarm = getFarmByUserID(results[0].Email);
+            let objUser = new User(results[0].Email, results[0].FirstName, results[0].LastName, results[0].MobileNumber, objFarm, results[0].IsOwner);
             let objSession = new Session(results[0].SessionID, objUser, results[0].StartDateTime, null);
             callback(objSession);
           } else {

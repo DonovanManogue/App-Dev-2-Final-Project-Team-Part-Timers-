@@ -12,6 +12,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uuid@3.4.0/dist/umd/uuidv4.min.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-hippieblue" id="navMain" style="display:none; ">
@@ -236,10 +237,12 @@
           <table class="table table-striped-columns" id="workersTable">
               <thead>
                 <tr>
+                  <th>EntryID</th>
                   <th>User</th>
                   <th>Title</th>
                   <th>Payrate</th>
                   <th>EffectiveDateTime</th>
+                  <th>FarmID</th>
                 </tr>
               </thead>
               <tbody>
