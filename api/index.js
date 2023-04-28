@@ -227,7 +227,7 @@ app.post("/login", (req, res) => {
             console.log(objSession);
             pool.query("INSERT INTO tblPosition VALUES(?, ?, ?, ?,SYSDATE(),?)", [strEntryID,strUser,strTitle, strPayRate,  objSession.User.Farm.FarmID ], function(error, results) {
               if (!error) {
-                let objMessage = new Message("PositionID", strEntryID);
+                let objMessage = new Message("EntryID", strEntryID);
                 res.status(201).send(objMessage);
               } else {
                 let objMessage = new Message("Error", error);
@@ -240,6 +240,74 @@ app.post("/login", (req, res) => {
           }
         });
       });
+
+      app.get("/position", (req, res, next) => {
+        let strSessionID = req.query.sessionid || req.body.sessionid;
+        getSessionDetails(strSessionID, function(objSession) {
+        pool.query("SELECT * FROM tblPosition WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
+            if(!error){
+                res.status(200).send(results)
+            } else {
+                let objError = new Message("Error",error);
+                res.status(400).send(objError);
+            }
+            
+        });
+    });
+});
+
+app.put("/position", (req, res, next) => {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    getSessionDetails(strSessionID, function(objSession) {
+      if (objSession) {
+        let strTitle = req.query.title || req.body.title;
+        let strPayRate = req.query.payrate || req.body.payrate;
+        let strEntryID = req.body.entryid || req.query.entryid;
+        pool.query(
+          "UPDATE tblPosition SET User=?, Title=?, PayRate=? WHERE FarmID=? AND EntryID=?",
+          [req.body.name, strTitle, strPayRate, objSession.User.Farm.FarmID, strEntryID],
+          function(error, results) {
+            if (!error) {
+              let objMessage = new Message("Success", "Position Updated");
+              res.status(200).send(objMessage);
+            } else {
+              let objError = new Message("Error", error);
+              res.status(400).send(objError);
+            }
+          }
+        );
+      } else {
+          let objError = new Message("Error", "Bad Session");
+          res.status(401).send(objError);
+      }
+    });
+  });
+  
+  app.delete("/position", (req, res, next) => {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strEntryID = req.body.entryid || req.query.entryid;
+    getSessionDetails(strSessionID, function(objSession) {
+      if (objSession) {
+        pool.query(
+          "DELETE FROM tblPosition WHERE FarmID=? AND EntryID=?",
+          [objSession.User.Farm.FarmID, strEntryID],
+          function(error, results) {
+            if (!error) {
+              let objMessage = new Message("Success", "Position Deleted");
+              res.status(200).send(objMessage);
+            } else {
+              let objError = new Message("Error", error);
+              res.status(400).send(objError);
+            }
+          }
+        );
+      } else {
+        let objError = new Message("Error", "Bad Session");
+        res.status(401).send(objError);
+      }
+    });
+  });
+  
       
     
 
@@ -475,24 +543,7 @@ app.get("/harvests", (req,res,next) => {
     });
 });
 
-app.get("/position", (req,res,next) => {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession.IsOwner == true){
-            pool.query("SELECT * FROM tblPosition WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
-                if(!error){
-                    res.status(200).send(results)
-                } else {
-                    let objError = new Message("Error",error);
-                    res.status(400).send(objError);
-                }
-            });
-        } else {
-            let objError = new Message("Error","Only Owners Are Authorized For This Function ");
-            res.status(401).send(objError);
-        }
-    });
-});
+
 app.get("/farms", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
@@ -662,34 +713,6 @@ app.put("/farms", (req,res,next) => {
     });
 });
 
-app.put("/position", (req, res, next) => {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strTitle = req.query.title || req.body.title;
-    let strPayRate = req.query.payrate || req.body.payrate;
-    let strEffectiveDate = req.query.effectivedate || req.body.effectivedate;
-    getSessionDetails(strSessionID, function (objSession) {
-      if (objSession) {
-        if (objSession.IsOwner == true) {
-          pool.query(
-            "UPDATE tblPositions SET Title = ?, PayRate = ?, EffectiveDate = ? WHERE Entry = ?",
-            [strTitle, strPayRate, strEffectiveDate, req.body.entry],
-            function (error, results) {
-              if (!error) {
-                let objMessage = new Message("Success", "Position Updated");
-                res.status(200).send(objMessage);
-              } else {
-                let objError = new Message("Error", error);
-                res.status(400).send(objError);
-              }
-            }
-          );
-        } else {
-          let objError = new Message("Error", "User is not an owner");
-          res.status(400).send(objError);
-        }
-      }
-    });
-  });
 
 
 

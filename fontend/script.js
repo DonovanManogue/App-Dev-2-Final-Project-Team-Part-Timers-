@@ -1,4 +1,5 @@
 
+
 var strBaseURL = 'http://localhost:8000';
 $(document).ready(function() {
 
@@ -348,59 +349,92 @@ $('#btnSignUp').on('click', function(){
 });
 
 
+
+function loadWorkers() {
+  $.ajax({
+    url: strBaseURL + '/position',
+    method: 'GET',
+    data: {
+      sessionid: sessionStorage.getItem('session')
+    },
+    success: function(data) {
+      console.log('Workers loaded:', data);
+      // Clear the existing table rows
+      $('#workersTable tbody').empty();
+      
+      // Append the new worker records to the table
+      $.each(data, function(index, worker) {
+        $('#workersTable tbody').append('<tr><td>'+ worker.EntryID +'</td><td>' + worker.User + '</td><td>' + worker.Title +
+        '</td><td>' + worker.PayRate + '</td><td>' + worker.EffectiveDateTime + '</td><td>' + worker.FarmID + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
+      });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.error(errorThrown);
+    }
+  })
+}
+
+
 $(document).ready(function() {
+
+loadWorkers();
 
   $('#addWorkerForm').submit(function(event) {
     event.preventDefault();
-    let strSessionID = sessionStorage.getItem('SimpleFarmSession');
-    var workerName = $('#workerName').val();
-    var workerTitle = $('#workerTitle').val();
-    var workerPay = $('#workerPay').val();
-    var workerDate = $('#workerDate').val();
-    function uuidv4() {
+    var txtUser = $('#txtUser').val();
+    var txtTitle = $('#txtTitle').val();
+    var txtPayRate = $('#txtPayRate').val();
       // Generate and return a UUID v4 string
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
-    const entryID = uuidv4();
 
-    $.ajax({  
-      url: strBaseURL + '/position',
-      method: 'POST',
-      data: {
-        entry: entryID,
-        user: $('#workerName').val(),
-        title: $('#workerTitle').val(),
-        payrate: $('#workerPay').val(),
-        effectivedate: $('#workerDate').val(),
-        sessionid: sessionStorage.getItem('session')
-      },
-      success: function(response) {
-        console.log('Worker added:', response);
-        $('#workersTable tbody').append('<tr><td>'+ entryID +'</td><td>' + workerName + '</td><td>' + workerTitle +
-        '</td><td>' + workerPay + '</td><td>' + workerDate + '</td><td>' + response.FarmID + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
-      $('#addWorkerModal').modal('hide');
-      $('#addWorkerForm')[0].reset();
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.error(errorThrown);
-      }
-    });
-});
+
+      $.ajax({  
+        url: strBaseURL + '/position',
+        method: 'POST',
+        data: {
+          user: $('#txtUser').val(),
+          title: $('#txtTitle').val(),
+          payrate: $('#txtPayRate').val(),
+          effectivedate: $('#workerDate').val(),
+          sessionid: sessionStorage.getItem('session')
+        },
+        success: function(response) {
+          console.log('Worker added:', response);
+          loadWorkers();
+          
+          // Append a new row to the tbody of #workersTable
+          var newRow = $('<tr>').append(
+            $('<td>').text(response.EntryID),
+            $('<td>').text(txtUser),
+            $('<td>').text(txtTitle),
+            $('<td>').text(txtPayRate),
+            $('<td>').text(workerDate),
+            $('<td>').text(response.FarmID),
+            $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
+          );
+          $('#workersTable tbody').append(newRow);
+          
+          // Hide the modal and reset the form
+          $('#addWorkerModal').modal('hide');
+          $('#addWorkerForm')[0].reset();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error(errorThrown);
+        }
+      });
+    });      
+    
   
 
   /// Open edit modal when edit button is clicked
 $('#workersTable').on('click', '.editButton', function() {
   var currentRow = $(this).closest('tr');
-  var workerName = currentRow.find('td:first').text();
-  var workerTitle = currentRow.find('td:eq(1)').text();
-  var workerPay = currentRow.find('td:eq(2)').text();
+  var txtUser = currentRow.find('td:first').text();
+  var txtTitle = currentRow.find('td:eq(1)').text();
+  var txtPayRate = currentRow.find('td:eq(2)').text();
   var workerDate = currentRow.find('td:eq(3)').text();
-  $('#editWorkerModal #editWorkerName').val(workerName);
-  $('#editWorkerModal #editWorkerTitle').val(workerTitle);
-  $('#editWorkerModal #editWorkerPay').val(workerPay);
+  $('#editWorkerModal #edittxtUser').val(txtUser);
+  $('#editWorkerModal #edittxtTitle').val(txtTitle);
+  $('#editWorkerModal #edittxtPayRate').val(txtPayRate);
   $('#editWorkerModal #editWorkerDate').val(workerDate);
   $('#editWorkerModal #editIndex').val(currentRow.index());
   $('#editWorkerModal').modal('show');
@@ -409,14 +443,14 @@ $('#workersTable').on('click', '.editButton', function() {
 // Save changes when edit form is submitted
 $('#editWorkerModal #editWorkerForm').submit(function(event) {
   event.preventDefault();
-  var workerName = $('#editWorkerModal #editWorkerName').val();
-  var workerTitle = $('#editWorkerModal #editWorkerTitle').val();
-  var workerPay = $('#editWorkerModal #editWorkerPay').val();
+  var txtUser = $('#editWorkerModal #edittxtUser').val();
+  var txtTitle = $('#editWorkerModal #edittxtTitle').val();
+  var txtPayRate = $('#editWorkerModal #edittxtPayRate').val();
   var workerDate = $('#editWorkerModal #editWorkerDate').val();
   var currentRow = $('#workersTable tbody tr:eq(' + $('#editWorkerModal #editIndex').val() + ')');
-  currentRow.find('td:first').text(workerName);
-  currentRow.find('td:eq(1)').text(workerTitle);
-  currentRow.find('td:eq(2)').text(workerPay);
+  currentRow.find('td:first').text(txtUser);
+  currentRow.find('td:eq(1)').text(txtTitle);
+  currentRow.find('td:eq(2)').text(txtPayRate);
   currentRow.find('td:eq(3)').text(workerDate);
   $('#editWorkerModal').modal('hide');
 });
