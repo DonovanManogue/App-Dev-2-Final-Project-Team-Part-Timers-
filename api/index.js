@@ -215,39 +215,32 @@ app.post("/login", (req, res) => {
     });
 
 
-    app.post("/position",(req,res,next)=> {
+    app.post("/position", (req, res, next) => {
         let strSessionID = req.query.sessionid || req.body.sessionid;
-        //let strEntry = req.query.entry || req.body.entry;
-        let strEntry = uuidv4();
-        let strUser = req.query.user || req.body.user;
-        let strTitle = req.query.title || req.body.title;
+        let strEntryID = uuidv4();
         let strPayRate = req.query.payrate || req.body.payrate;
-        let strEffectiveDate = req.query.effectivedate || req.body.effectivedate;
-        console.log(strSessionID)
+        let strTitle = req.query.title || req.body.title;
+        let strUser = req.query.user || req.body.user;
+       
         getSessionDetails(strSessionID, function(objSession) {
-            console.log("objSession: ", objSession);
-            if (objSession && objSession.User !== undefined) { // Add null/undefined check
-                console.log("objSession.User: ", objSession.User);
-                    pool.query("INSERT INTO tblPosition VALUES(?, ?, ?, ?, ?, ?)", 
-                    [strEntry,strUser, strTitle, strPayRate, strEffectiveDate, objSession.Farm.FarmID], 
-                    function(error, results) {
-                       if(!error) {
-                           let objMessage = new Message("PositionID",strEntry);
-                           res.status(201).send(objMessage);
-                       } else {
-                           let objMessage = new Message("Error",error);
-                           res.status(400).send(objMessage);
-                       }
-                    }
-                  )
-               
-            } else {
-                let objError = new Message("Error","Bad Session");
-                res.status(401).send(objError);
-            }
-            
+          if (objSession) {
+            console.log(objSession);
+            pool.query("INSERT INTO tblPosition VALUES(?, ?, ?, ?,SYSDATE(),?)", [strEntryID,strUser,strTitle, strPayRate,  objSession.User.Farm.FarmID ], function(error, results) {
+              if (!error) {
+                let objMessage = new Message("PositionID", strEntryID);
+                res.status(201).send(objMessage);
+              } else {
+                let objMessage = new Message("Error", error);
+                res.status(400).send(objMessage);
+              }
+            });
+          } else {
+            let objError = new Message("Error", "Bad Session");
+            res.status(401).send(objError);
+          }
         });
-    });
+      });
+      
     
 
 app.post("/product",(req,res)=> {
@@ -258,7 +251,7 @@ app.post("/product",(req,res)=> {
     let strDescription = req.query.description || req.body.description;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?, ?, 'ACTIVE',?)",[strProductID,strShortName,strLongName,strDescription,objSession.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?, ?, 'ACTIVE',?)",[strProductID,strShortName,strLongName,strDescription,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("ProductID",strProductID);
                     res.status(201).send(objMessage);
@@ -284,7 +277,7 @@ app.post("/rawmaterial",(req,res,next)=> {
     let strCost = req.query.description || req.body.description;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblRawMaterials VALUES(?, ?, ?, ?,GETDATE(),?,?,?,?)",[strMaterialID,strDescription,strRelatedProduct,objSession.Email,strQuantity,strUnitOfMeasure,strCost,objSession.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblRawMaterials VALUES(?, ?, ?, ?,GETDATE(),?,?,?,?)",[strMaterialID,strDescription,strRelatedProduct,objSession.Email,strQuantity,strUnitOfMeasure,strCost,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("MaterialID",strMaterialID);
                     res.status(201).send(objMessage);
@@ -307,7 +300,7 @@ app.post("/tasklog",(req,res,next)=> {
     
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblTaskLog VALUES(?,?,?,GETDATE(),NULL,?)",[strTaskLogID,strTask,objSession.Email,objSession.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblTaskLog VALUES(?,?,?,GETDATE(),NULL,?)",[strTaskLogID,strTask,objSession.Email,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("TaskLogID",strTaskLogID);
                     res.status(201).send(objMessage);
@@ -332,7 +325,7 @@ app.post("/harvests",(req,res,next)=> {
     
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,GETDATE(),?,?,?)",[strHarvestID,strProduct,objSession.Email,strQuantity,strUnitOfMeasure,objSession.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,GETDATE(),?,?,?)",[strHarvestID,strProduct,objSession.Email,strQuantity,strUnitOfMeasure,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("HarvestID",strHarvestID);
                     res.status(201).send(objMessage);
@@ -393,7 +386,7 @@ app.post("/tasks", (req, res, next) => {
       if (objSession) {
         pool.query(
           "INSERT INTO tblTasks (TaskID, TaskName, Note, Status, FarmID) VALUES (?, ?, ?, ?, ?)",
-          [strTaskID, strTaskName, strNote, strStatus, objSession.Farm.FarmID],
+          [strTaskID, strTaskName, strNote, strStatus, objSession.User.Farm.FarmID],
           function (error, results) {
             if (!error) {
               let objMessage = new Message("PositionID", strTaskID);
@@ -420,7 +413,7 @@ app.post("/unitofmeasure", (req, res, next) => {
     getSessionDetails(strSessionID, function (objSession) {
       if (objSession) {
         pool.query("INSERT INTO tblUnitOfMeasure (Abbreviation, Description, DateCreated, Status, CreatedBy, FarmID) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)",
-          [strAbbreviation, strDescription, strStatus, objSession.Email, objSession.Farm.FarmID],
+          [strAbbreviation, strDescription, strStatus, objSession.Email, objSession.User.Farm.FarmID],
           function (error, results) {
             if (!error) {
               let objMessage = new Message("UnitOfMeasureID", results.insertId);
@@ -442,7 +435,7 @@ app.post("/unitofmeasure", (req, res, next) => {
 app.get("/tasks", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblTasks WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblTasks WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -456,7 +449,7 @@ app.get("/tasks", (req,res,next) => {
 app.get("/unitofmeasure", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblUnitOfMeasure WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblUnitOfMeasure WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -470,7 +463,7 @@ app.get("/unitofmeasure", (req,res,next) => {
 app.get("/harvests", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblHarvests WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblHarvests WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -486,7 +479,7 @@ app.get("/position", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession.IsOwner == true){
-            pool.query("SELECT * FROM tblPosition WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+            pool.query("SELECT * FROM tblPosition WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
                 if(!error){
                     res.status(200).send(results)
                 } else {
@@ -503,7 +496,7 @@ app.get("/position", (req,res,next) => {
 app.get("/farms", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblFarms WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblFarms WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -517,7 +510,7 @@ app.get("/farms", (req,res,next) => {
 app.get("/products", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblProducts WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblProducts WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -531,7 +524,7 @@ app.get("/products", (req,res,next) => {
 app.get("/rawmaterials", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblRawMaterials WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblRawMaterials WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -545,7 +538,7 @@ app.get("/rawmaterials", (req,res,next) => {
 app.get("/tasklog", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblTasklog WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblTasklog WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -560,7 +553,7 @@ app.get("/tasklog", (req,res,next) => {
 app.get("/farmassignment", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblFarmAssignment WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblFarmAssignment WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -574,7 +567,7 @@ app.get("/farmassignment", (req,res,next) => {
 app.get("/users", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblUsers WHERE FarmID = ?",objSession.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblUsers WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -1085,24 +1078,27 @@ app.delete("/tasks", (req,res,next) => {
     // End Step Four
     // Step Five
     function getSessionDetails(strSessionID, callback) {
-        pool.query("SELECT * FROM tblSessions LEFT JOIN tblUsers ON tblSessions.UserID = tblUsers.Email WHERE SessionID = ?", [strSessionID], function (error, results) {
-          if (!error && results.length > 0) {
-            let objFarm = getFarmByUserID(results[0].Email);
-            let objUser = new User(results[0].Email, results[0].FirstName, results[0].LastName, results[0].MobileNumber, objFarm, results[0].IsOwner);
-            let objSession = new Session(results[0].SessionID, objUser, results[0].StartDateTime, null);
-            callback(objSession);
+        pool.query('SELECT * FROM tblSessions LEFT JOIN tblUsers ON tblSessions.UserID = tblUsers.Email LEFT JOIN tblFarmAssignment ON tblSessions.UserID = tblFarmAssignment.User WHERE SessionID = ?', [strSessionID], function(error, results) {
+            if (!error) {
+            let objFarm;
+            getFarmByID(results[0].FarmID, function(objReturnedFarm) {
+              objFarm = objReturnedFarm;
+              let objUser = new User(results[0].Email, results[0].FirstName, results[0].LastName, results[0].MobileNumber, objFarm, results[0].IsOwner);
+              let objSession = new Session(results[0].SessionID, objUser, results[0].StartDateTime, null);
+              callback(objSession) ;
+            });
           } else {
-            callback(null);
+            callback(null); 
           }
         });
       }
-      
 // Example function using the async pool.query with a callback
 function getFarmByID(strFarmID,callback){
     pool.query("SELECT * FROM tblFarms WHERE FarmID = ?",[strFarmID], function(error, results){
         if(!error){
             if(results.length > 0){
-                callback(new Farm(results[0].FarmID,results[0].FarmName,results[0].StreetAddress1,results[0].StreetAddress2,results[0].City,results[0].State,results[0].ZIP));
+                let objFarm = new Farm(results[0].FarmID,results[0].FarmName,results[0].StreetAddress1,results[0].StreetAddress2,results[0].City,results[0].State,results[0].ZIP);
+                callback(objFarm);
             } else {
                 callback(null);
             }
@@ -1111,6 +1107,7 @@ function getFarmByID(strFarmID,callback){
         }
     });
 }
+
 function getFarmByUserID(strUserID,callback){
     pool.query("SELECT tblFarms.* FROM tblFarmAssignment LEFT JOIN tblFarm ON tblFarmAssignment.FarmID = tblFarm.FarmID WHERE User = ?",[strUserID], function(error, results){
         if(!error){
