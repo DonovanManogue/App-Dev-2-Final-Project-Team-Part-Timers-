@@ -258,15 +258,17 @@ app.post("/login", (req, res) => {
 
 app.put("/position", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
-    getSessionDetails(strSessionID, function(objSession) {
-      if (objSession) {
+        let strUser = req.query.user || req.body.user;
         let strTitle = req.query.title || req.body.title;
         let strPayRate = req.query.payrate || req.body.payrate;
         let strEntryID = req.body.entryid || req.query.entryid;
+        getSessionDetails(strSessionID, function(objSession) {
+            if (objSession) {
         pool.query(
-          "UPDATE tblPosition SET User=?, Title=?, PayRate=? WHERE FarmID=? AND EntryID=?",
-          [req.body.name, strTitle, strPayRate, objSession.User.Farm.FarmID, strEntryID],
+          "UPDATE tblPosition SET User=?, Title=?,  PayRate=?  WHERE EntryID=?",
+          [ strUser, strTitle, strPayRate,strEntryID, objSession.User.Farm.FarmID ],
           function(error, results) {
+            console.log(results);
             if (!error) {
               let objMessage = new Message("Success", "Position Updated");
               res.status(200).send(objMessage);
@@ -289,8 +291,8 @@ app.put("/position", (req, res, next) => {
     getSessionDetails(strSessionID, function(objSession) {
       if (objSession) {
         pool.query(
-          "DELETE FROM tblPosition WHERE FarmID=? AND EntryID=?",
-          [objSession.User.Farm.FarmID, strEntryID],
+          "DELETE FROM tblPosition WHERE  EntryID=?",
+          [strEntryID],
           function(error, results) {
             if (!error) {
               let objMessage = new Message("Success", "Position Deleted");

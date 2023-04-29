@@ -426,13 +426,21 @@ loadWorkers();
   
 
   /// Open edit modal when edit button is clicked
-$('#workersTable').on('click', '.editButton', function() {
-  var currentRow = $(this).closest('tr');
-  var txtUser = currentRow.find('td:first').text();
-  var txtTitle = currentRow.find('td:eq(1)').text();
-  var txtPayRate = currentRow.find('td:eq(2)').text();
-  var workerDate = currentRow.find('td:eq(3)').text();
-  $('#editWorkerModal #edittxtUser').val(txtUser);
+  $('#workersTable').on('click', '.editButton', function() {
+    var currentRow = $(this).closest('tr');
+    console.log(currentRow);
+    txtEntryID = currentRow.find('td:first').text();
+    txtUser = currentRow.find('td:eq(1)').text();
+    var txtTitle = currentRow.find('td:eq(2)').text();
+    var txtPayRate = currentRow.find('td:eq(3)').text();
+    var workerDate = currentRow.find('td:eq(4)').text();
+    console.log("txtEntryID:" + txtEntryID);
+    console.log("txtUser:" + txtUser);
+    console.log("txtTitle:" + txtTitle);
+    console.log("txtPayRate:" + txtPayRate);
+    console.log("workerDate:" + workerDate);
+
+
   $('#editWorkerModal #edittxtTitle').val(txtTitle);
   $('#editWorkerModal #edittxtPayRate').val(txtPayRate);
   $('#editWorkerModal #editWorkerDate').val(workerDate);
@@ -440,19 +448,40 @@ $('#workersTable').on('click', '.editButton', function() {
   $('#editWorkerModal').modal('show');
 });
 
-// Save changes when edit form is submitted
 $('#editWorkerModal #editWorkerForm').submit(function(event) {
   event.preventDefault();
-  var txtUser = $('#editWorkerModal #edittxtUser').val();
   var txtTitle = $('#editWorkerModal #edittxtTitle').val();
   var txtPayRate = $('#editWorkerModal #edittxtPayRate').val();
   var workerDate = $('#editWorkerModal #editWorkerDate').val();
   var currentRow = $('#workersTable tbody tr:eq(' + $('#editWorkerModal #editIndex').val() + ')');
-  currentRow.find('td:first').text(txtUser);
-  currentRow.find('td:eq(1)').text(txtTitle);
-  currentRow.find('td:eq(2)').text(txtPayRate);
-  currentRow.find('td:eq(3)').text(workerDate);
+  currentRow.find('td:first').text(txtEntryID);
+  currentRow.find('td:eq(1)').text(txtUser);
+  currentRow.find('td:eq(2)').text(txtTitle);
+  currentRow.find('td:eq(3)').text(txtPayRate);
+  currentRow.find('td:eq(4)').text(workerDate);
   $('#editWorkerModal').modal('hide');
+
+  // Send PUT request to server to update worker position
+
+  $.ajax({
+    url: strBaseURL+"/position",
+    method: "PUT",
+    data: {
+      user: txtUser,
+      title: txtTitle,
+      payrate: txtPayRate,
+      entryid: txtEntryID,
+      sessionid: sessionStorage.getItem('session')
+    },
+    success: function(response) {
+      console.log(response);
+      loadWorkers();
+    },
+    error: function(xhr, statusText, error) {
+      console.log(error);
+      // handle error
+    }
+  });
 });
 
  // Open delete modal when delete button is clicked
@@ -460,20 +489,39 @@ $('#workersTable').on('click', '.deleteButton', function() {
   var currentRow = $(this).closest('tr');
   $('#deleteWorkerModal #deleteIndex').val(currentRow.index());
   $('#deleteWorkerModal').modal('show');
-  });
-  
-  // Delete worker when delete button is clicked in delete modal
-  $('#deleteButton').click(function() {
+});
+
+// Delete worker when delete button is clicked in delete modal
+$('#deleteButton').click(function() {
   var deleteIndex = $('#deleteWorkerModal #deleteIndex').val();
   var currentRow = $('#workersTable tbody tr:eq(' + deleteIndex + ')');
+  var entryID = currentRow.find('td:first').text(); // Get the entryID from the first column of the row
   currentRow.remove();
   $('#deleteWorkerModal').modal('hide');
+
+  // Send DELETE request to server to delete worker
+  $.ajax({
+    url: strBaseURL + "/position",
+    method: "DELETE",
+    data: {
+      entryID: entryID,
+      sessionid: sessionStorage.getItem('session')
+    },
+    success: function(response) {
+      console.log(response);
+      // handle success response
+    },
+    error: function(xhr, statusText, error) {
+      console.log(error);
+      // handle error
+    }
   });
-  
-  // Clear input fields on modal dismiss
-  $('#addWorkerModal, #editWorkerModal').on('hidden.bs.modal', function() {
+});
+
+// Clear input fields on modal dismiss
+$('#addWorkerModal, #editWorkerModal').on('hidden.bs.modal', function() {
   $(this).find('form')[0].reset();
-  });
+});
 });
 
 
