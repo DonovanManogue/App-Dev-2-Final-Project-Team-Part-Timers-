@@ -284,6 +284,44 @@ app.put("/position", (req, res, next) => {
       }
     });
   });
+
+  app.put("/products",(req,res,next)=> {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strProductName = req.query.productname || req.body.productname;
+    let strDescription = req.query.description || req.body.description;
+    let strStatus = req.query.status || req.body.status;
+    let strProductID = req.query.productid || req.body.productid;
+    getSessionDetails(strSessionID,function(objSession){
+        if(objSession){
+            pool.query("UPDATE tblProducts SET ProductName =?, Description = ?, Status =? WHERE ProductID = ?", [strProductName, strDescription,strStatus,strProductID], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Product Updated");
+                    res.status(200).send(objMessage);
+                } else {
+                    let objError = new Message("Error",error);
+                }
+            });
+        }
+    });
+});
+
+app.delete("/products", (req,res,next) => {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strProductID = req.query.productid || req.body.productid;
+    getSessionDetails(strSessionID,function(objSession){
+        if(objSession){
+            pool.query("DELETE FROM tblProducts WHERE ProductID = ?",[strProductID], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Product Deleted");
+                    res.status(202).send(objMessage)
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            });
+        }
+    });
+});
   
   app.delete("/position", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -291,7 +329,7 @@ app.put("/position", (req, res, next) => {
     getSessionDetails(strSessionID, function(objSession) {
       if (objSession) {
         pool.query(
-          "DELETE FROM tblPosition WHERE  EntryID=?",
+          "DELETE FROM tblPosition WHERE EntryID=?",
           [strEntryID],
           function(error, results) {
             if (!error) {
@@ -313,15 +351,14 @@ app.put("/position", (req, res, next) => {
       
     
 
-app.post("/product",(req,res)=> {
+app.post("/products",(req,res)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = uuidv4();
-    let strShortName = req.query.shortname || req.body.shortname;
-    let strLongName = req.query.longname || req.body.longname;
+    let strProductName = req.query.productname || req.body.productname;
     let strDescription = req.query.description || req.body.description;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?, ?, 'ACTIVE',?)",[strProductID,strShortName,strLongName,strDescription,objSession.User.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?, 'ACTIVE',?)",[strProductID,strProductName,strDescription,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("ProductID",strProductID);
                     res.status(201).send(objMessage);
@@ -834,26 +871,7 @@ app.put("/task",(req,res,next)=> {
     });
 });
 
-app.put("/products",(req,res,next)=> {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strShortName = req.query.shortname || req.body.shortname;
-    let strLongName = req.query.longname || req.body.longname;
-    let strDescription = req.query.description || req.body.description;
-    let strProductID = req.query.productid || req.body.productid;
-    
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession){
-            pool.query("UPDATE tblProducts SET ShortName = ?, LongName = ?, Description = ? WHERE ProductID = ?", [strShortName, strLongName, strDescription, strProductID], function(error,results){
-                if(!error){
-                    let objMessage = new Message("Success","Product Updated");
-                    res.status(200).send(objMessage);
-                } else {
-                    let objError = new Message("Error",error);
-                }
-            });
-        }
-    });
-});
+
 
 app.put("/users",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -974,26 +992,7 @@ app.delete("/positions", (req,res,next) => {
     });
 });
 
-app.delete("/products", (req,res,next) => {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strProductID = uuidv4();
-    let strShortName = req.query.shortname || req.body.shortname;
-    let strLongName = req.query.longname || req.body.longname;
-    let strDescription = req.query.description || req.body.description;
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession){
-            pool.query("DELETE FROM tblProducts WHERE ProductID = ?, ShortName = ?, LongName = ?, Description = ?",[strProductID, strShortName, strLongName, strDescription], function(error,results){
-                if(!error){
-                    let objMessage = new Message("Success","Product Deleted");
-                    res.status(202).send(objMessage)
-                } else {
-                    let objError = new Message("Error",error);
-                    res.status(400).send(objError);
-                }
-            });
-        }
-    });
-});
+
 
 app.delete("/rawmaterials", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
