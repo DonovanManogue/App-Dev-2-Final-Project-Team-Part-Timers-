@@ -314,7 +314,25 @@ function loadWorkers() {
       console.log('Workers loaded:', data);
       // Clear the existing table rows
       $('#workersTable tbody').empty();
-      
+      $.ajax({
+        url: strBaseURL+'/workers/count',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var numWorkers = data.numWorkers;
+          var totalPay = data.totalPay;
+
+      // Display the number of workers and total pay in the "#numWorkersTable" table
+      var newRow = $('<tr>').append(
+        $('<td>').text(numWorkers),
+        $('<td>').text('$'+totalPay.toFixed(2))
+      );
+      $('#numWorkersTable tbody').empty().append(newRow);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error(errorThrown);
+        }
+      })
       // Append the new worker records to the table
       $.each(data, function(index, worker) {
         $('#workersTable tbody').append('<tr><td>'+ worker.EntryID +'</td><td>' + worker.User + '</td><td>' + worker.Title +
@@ -488,7 +506,25 @@ function loadProducts() {
       console.log('Products loaded:', data);
       // Clear the existing table rows
       $('#productTable tbody').empty();
-      
+      $.ajax({
+        url: strBaseURL+'/products/count',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          var numProducts = data.numProducts;
+          var totalPay = data.totalPay;
+
+      // Display the number of workers and total pay in the "#numWorkersTable" table
+      var newRow = $('<tr>').append(
+        $('<td>').text(numProducts),
+        
+      );
+      $('#numProductsTable tbody').empty().append(newRow);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.error(errorThrown);
+        }
+      })
       // Append the new worker records to the table
       $.each(data, function(index, product) {
         $('#productTable tbody').append('<tr><td>'+ product.ProductID +'</td><td>' + product.ProductName + '</td><td>' + product.Description +
@@ -651,3 +687,181 @@ $(document).ready(function() {
     $(this).find('form')[0].reset();
   });
   });
+
+  function loadHarvests() {
+    $.ajax({
+      url: strBaseURL + '/Harvests',
+      method: 'GET',
+      data: {
+        sessionid: sessionStorage.getItem('session')
+      },
+      success: function(data) {
+        console.log('Harvests loaded:', data);
+        // Clear the existing table rows
+        $('#HarvestTable tbody').empty();
+          
+        
+        // Append the new worker records to the table
+        $.each(data, function(index, Harvest) {
+          $('#HarvestTable tbody').append('<tr><td>'+ Harvest.HarvestID +'</td><td>' + Harvest.Product +
+          '</td><td>' + Harvest.HarvestDateTime + '</td><td>' + Harvest.Quantity + '</td><td>'+Harvest.FarmID+ '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
+        });
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error(errorThrown);
+      }
+    })
+  }
+
+  $(document).ready(function() {
+
+    loadHarvests();
+    
+      $('#addHarvestForm').submit(function(event) {
+        event.preventDefault();
+        var txtHarvestProduct = $('#txtHarvestProduct').val();
+        var txtQuantity = $('#txtQuantity').val();
+        var txtHarvestDateTime = $('#txtHarvestDateTime').val();
+          // Generate and return a UUID v4 string
+    
+    
+          $.ajax({  
+            url: strBaseURL + '/Harvests',
+            method: 'POST',
+            data: {
+              product: txtHarvestProduct,
+              harvestdatetime: txtHarvestDateTime,
+              quantity: txtQuantity,
+              sessionid: sessionStorage.getItem('session')
+            },
+            success: function(response) {
+              console.log('Harvest added:', response);
+              loadHarvests();
+              
+              // Append a new row to the tbody of #workersTable
+              var newRow = $('<tr>').append(
+                $('<td>').text(response.HarvestID),
+                $('<td>').text(txtHarvestProduct),
+                $('<td>').text(txtHarvestUser),
+                $('<td>').text(txtHarvestDateTime),
+                $('<td>').text(txtQuantity),
+                $('<td>').text(txtUnitOfMeasure),
+                $('<td>').text(response.FarmID),
+                $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
+              );
+              $('#HarvestTable tbody').append(newRow);
+              
+              // Hide the modal and reset the form
+              $('#addHarvestModal').modal('hide');
+              $('#addHarvestForm')[0].reset();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error(errorThrown);
+            }
+          });
+        });      
+        
+      
+      /// Open edit modal when edit button is clicked
+      $('#HarvestTable').on('click', '.editButton', function() {
+        var currentRow = $(this).closest('tr');
+        console.log(currentRow);
+        var txtHarvestID = currentRow.find('td:first').text();
+        var txtHarvestProduct = currentRow.find('td:eq(1)').text();
+        var txtHarvestDateTime = currentRow.find('td:eq(2)').text();
+        var txtQuantity = currentRow.find('td:eq(3)').text();
+        var txtFarmID = currentRow.find('td:eq(4)').text();
+
+       console.log(txtHarvestID);
+        console.log(txtHarvestProduct);
+        console.log(txtHarvestDateTime);
+        console.log(txtQuantity);
+        console.log(txtFarmID);
+
+  
+    
+    
+      $('#editHarvestModal #edittxtHarvestProduct').val(txtHarvestProduct);
+      $('#editHarvestModal #edittxtQuantity').val(txtQuantity);
+      $('#editHarvestModal #editIndex').val(currentRow.index());
+      $('#editHarvestModal').modal('show');
+    });
+    
+    $('#editHarvestModal #editHarvestForm').submit(function(event) {
+      event.preventDefault();
+      var txtHarvestProduct = $('#editHarvestModal #edittxtHarvestProduct').val();
+      var txtQuantity = $('#editHarvestModal #edittxtQuantity').val();
+      var currentRow = $('#HarvestTable tbody tr:eq(' + $('#editHarvestModal #editIndex').val() + ')');
+      currentRow.find('td:first').text(txtHarvestID);
+      currentRow.find('td:eq(1)').text(txtHarvestProduct);
+      currentRow.find('td:eq(2)').text(txtHarvestDateTime);
+      currentRow.find('td:eq(3)').text(txtQuantity);
+      currentRow.find('td:eq(4)').text(txtFarmID);
+      $('#editHarvestModal').modal('hide');
+    
+      // Send PUT request to server to update worker position
+    
+      $.ajax({
+        url: strBaseURL+"/Harvests",
+        method: "PUT",
+        data: {
+          product: txtHarvestProduct,
+          harvestdatetime: txtHarvestDateTime,
+          quantity: txtQuantity,
+          sessionid: sessionStorage.getItem('session')
+        },
+        success: function(response) {
+          console.log(response);
+          console.log(txtHarvestProduct);
+          console.log(txtHarvestDateTime);
+          console.log(txtQuantity);
+
+          loadHarvests();
+        },
+        error: function(xhr, statusText, error) {
+          console.log(error);
+          // handle error
+        }
+      });
+    });
+    let txtHarvestID;
+     // Open delete modal when delete button is clicked
+     $('#HarvestTable').on('click', '.deleteButton', function() {
+      var currentRow = $(this).closest('tr');
+      txtHarvestID = currentRow.find('td:first').text(); // Get the product ID from the first column of the row
+      console.log(txtHarvestID);
+      $('#deleteHarvestModal #deleteIndex').val(currentRow.index());
+      $('#deleteHarvestModal').modal('show');
+    });
+  
+    // Delete Harvest when delete button is clicked in delete modal
+    $('#deleteButtonHarvest').click(function() {
+      var deleteIndex = $('#deleteHarvestModal #deleteIndex').val();
+      var currentRow = $('#HarvestTable tbody tr:eq(' + deleteIndex + ')');
+      txtHarvestID
+      currentRow.remove();
+      $('#deleteHarvestModal').modal('hide');
+    
+      // Send DELETE request to server to delete Harvest
+      $.ajax({
+        url: strBaseURL + "/Harvests" + "?harvestid=" + txtHarvestID + "&sessionid=" + sessionStorage.getItem('session'),
+        method: "DELETE",
+        success: function(response) {
+          console.log(txtHarvestID);
+          console.log(response);
+      
+          loadHarvests();
+          // handle success response
+        },
+        error: function(xhr, statusText, error) {
+          console.log(error);
+          // handle error
+        }
+      });
+    });
+    
+    // Clear input fields on modal dismiss
+    $('#addHarvestModal, #editHarvestModal').on('hidden.bs.modal', function() {
+      $(this).find('form')[0].reset();
+    });
+    });

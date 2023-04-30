@@ -137,7 +137,7 @@ app.post("/farms", (req,res) => {
           console.error(err);
           return res.status(500).send(objMessage);
         } else {
-          pool.query("INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, SYSDATE())", [strEmail, strFirstName, strLastName, strPhoneNumber, hash], function(error2, results2) {
+          pool.query("INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, SYSDATE())", [strFirstName, strLastName,strEmail, strPhoneNumber, hash], function(error2, results2) {
             if (!error2) {
               let objMessage = new Message("FarmID", strFarmID);
               res.status(201).send(objMessage);
@@ -213,6 +213,55 @@ app.post("/login", (req, res) => {
     });
     });
     });
+
+    app.get('/workers/count', (req, res) => {
+        // Get a connection from the pool
+        pool.getConnection((err, conn) => {
+          if (err) {
+            return console.error(err);
+          }
+      
+          // Execute query to count number of rows in tblposition
+          const query = `SELECT COUNT(*) AS numWorkers, SUM(PayRate) AS totalPay FROM tblposition`;
+          conn.query(query, (err, rows) => {
+            // Release the connection back to the pool
+            conn.release();
+      
+            if (err) {
+              return console.error(err);
+            }
+      
+            // Return the result as JSON
+            const result = { numWorkers: rows[0].numWorkers, totalPay: rows[0].totalPay };
+      res.json(result);
+          });
+        });
+      });
+
+      app.get('/products/count', (req, res) => {
+        // Get a connection from the pool
+        pool.getConnection((err, conn) => {
+          if (err) {
+            return console.error(err);
+          }
+      
+          // Execute query to count number of rows in tblposition
+          const query = `SELECT COUNT(*) AS numProducts FROM tblproducts`;
+          conn.query(query, (err, rows) => {
+            // Release the connection back to the pool
+            conn.release();
+      
+            if (err) {
+              return console.error(err);
+            }
+      
+            // Return the result as JSON
+            const result = { numProducts: rows[0].numProducts };
+      res.json(result);
+          });
+        });
+      });
+
 
 
     app.post("/position", (req, res, next) => {
@@ -305,6 +354,34 @@ app.put("/position", (req, res, next) => {
     });
 });
 
+
+ app.put("/Harvests", (req, res, next) => {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strProductID = req.query.product || req.body.product;
+    let strQuantity = req.query.quantity || req.body.quantity;
+    let strHarvestID = req.query.harvestid || req.body.harvestid;
+    getSessionDetails(strSessionID, function (objSession) {
+      if (objSession) {
+        pool.query(
+          "UPDATE tblHarvest set product=?, set quantity= ? WHERE HarvestID = ?",
+          [strProductID, strQuantity, strHarvestID],
+          function (error, results) {
+            if (!error) {
+              let objMessage = new Message("Success", "Harvest Updated");
+              res.status(200).send(objMessage);
+            } else {
+              let objError = new Message("Error", error);
+              res.status(400).send(objError);
+            }
+          }
+        );
+      } else {
+        let objError = new Message("Error", "Invalid session ID");
+        res.status(400).send(objError);
+      }
+    });
+  });
+
 app.delete("/products", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = req.query.productid || req.body.productid;
@@ -348,7 +425,29 @@ app.delete("/products", (req,res,next) => {
     });
   });
   
-      
+
+  app.delete("/Harvests", (req,res,next) => {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strHarvestID = req.query.harvestid || req.body.harvestid;
+    getSessionDetails(strSessionID,function(objSession){
+        if(objSession){
+            pool.query("DELETE FROM tblHarvests WHERE HarvestID=? ",[strHarvestID], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Harvest Deleted");
+                    res.status(202).send(objMessage);
+                } else {
+                    let objError = new Message("Error",error);
+                    res.status(400).send(objError);
+                }
+            }
+            );
+        } else {
+            let objError = new Message("Error", "Bad Session");
+            res.status(401).send(objError);
+          }
+        });
+      });
+
     
 
 app.post("/products",(req,res)=> {
@@ -423,16 +522,17 @@ app.post("/tasklog",(req,res,next)=> {
         
     });
 });
-app.post("/harvests",(req,res,next)=> {
+app.post("/Harvests",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strUser = req.query.user || req.body.user;
     let strHarvestID = uuidv4();
-    let strProduct = req.query.task || req.body.task;
+    let strProductID = req.query.product || req.body.product;
     let strQuantity = req.query.quantity || req.body.quantity;
     let strUnitOfMeasure = req.query.unitofmeasure || req.body.unitofmeasure;
     
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,GETDATE(),?,?,?)",[strHarvestID,strProduct,objSession.Email,strQuantity,strUnitOfMeasure,objSession.User.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,SYSDATE(),?,?,?)",[strHarvestID,strProductID,strUser,strQuantity,strUnitOfMeasure,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("HarvestID",strHarvestID);
                     res.status(201).send(objMessage);
@@ -567,7 +667,7 @@ app.get("/unitofmeasure", (req,res,next) => {
         });
     });
 });
-app.get("/harvests", (req,res,next) => {
+app.get("/Harvests", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
         pool.query("SELECT * FROM tblHarvests WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
@@ -756,36 +856,7 @@ app.put("/farms", (req,res,next) => {
 
 
   
-  app.put("/harvests", (req, res, next) => {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strCrop = req.query.crop || req.body.crop;
-    let strVariety = req.query.variety || req.body.variety;
-    let strQuantity = req.query.quantity || req.body.quantity;
-    let strUnit = req.query.unit || req.body.unit;
-    let strDate = req.query.date || req.body.date;
-    let strTime = req.query.time || req.body.time;
-    let strNotes = req.query.notes || req.body.notes;
-    getSessionDetails(strSessionID, function (objSession) {
-      if (objSession) {
-        pool.query(
-          "UPDATE tblHarvest SET Crop = ?, Variety = ?, Quantity = ?, Unit = ?, Date = ?, Time = ?, Notes = ? WHERE HarvestID = ?",
-          [strCrop, strVariety, strQuantity, strUnit, strDate, strTime, strNotes, req.body.harvestid],
-          function (error, results) {
-            if (!error) {
-              let objMessage = new Message("Success", "Harvest Updated");
-              res.status(200).send(objMessage);
-            } else {
-              let objError = new Message("Error", error);
-              res.status(400).send(objError);
-            }
-          }
-        );
-      } else {
-        let objError = new Message("Error", "Invalid session ID");
-        res.status(400).send(objError);
-      }
-    });
-  });
+ 
 
   app.put("/rawmaterial",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -950,25 +1021,6 @@ app.delete("/farm", (req,res,next) => {
     });
 });
 
-app.delete("/harvests", (req,res,next) => {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strProduct = req.query.product || req.body.product;
-    let strQuantity = req.query.quantity || req.body.quantity;
-    let strUnitOfMeasure = req.query.unitofmeasure || req.body.unitofmeasure;
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession){
-            pool.query("DELETE FROM tblHarvests WHERE Product = ?, Quantity = ?, UnitOfMeasure = ?",[strProduct, strQuantity, strUnitOfMeasure], function(error,results){
-                if(!error){
-                    let objMessage = new Message("Success","Harvest Deleted");
-                    res.status(202).send(objMessage);
-                } else {
-                    let objError = new Message("Error",error);
-                    res.status(400).send(objError);
-                }
-            });
-        }
-    });
-});
 
 app.delete("/positions", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
