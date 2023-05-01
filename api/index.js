@@ -500,16 +500,20 @@ app.post("/products",(req,res)=> {
     });
     
 });
-app.post("/rawmaterial",(req,res,next)=> {
+app.post("/materials",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strMaterialID = uuidv4();
-    let strRelatedProduct = req.query.shortname || req.body.shortname;
-    let strQuantity = req.query.longname || req.body.longname;
-    let strUnitOfMeasure = req.query.description || req.body.description;
-    let strCost = req.query.description || req.body.description;
+    let strMaterial = req.query.material || req.body.material;
+    let strMaterialDescription = req.query.materialdescription || req.body.materialdescription;
+    let strRelatedProduct = req.query.relatedproduct || req.body.relatedproduct;
+    let strQuantity = req.query.quantity || req.body.quantity;
+    let strUnitOfMeasure2 = req.query.unitofmeasure2 || req.body.unitofmeasure2;
+    let strUnitOfMeasure = req.query.unitofmeasure|| req.body.unitofmeasure;
+    let strCost = req.query.cost || req.body.cost;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblRawMaterials VALUES(?, ?, ?, ?,GETDATE(),?,?,?,?)",[strMaterialID,strDescription,strRelatedProduct,objSession.Email,strQuantity,strUnitOfMeasure,strCost,objSession.User.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblMaterials VALUES(?, ?, ?, ?,?,SYSDATE(),?,?,?,?,?)",
+            [strMaterialID,strMaterial,strMaterialDescription,strRelatedProduct,objSession.Email,strQuantity,strUnitOfMeasure,strUnitOfMeasure2,strCost,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("MaterialID",strMaterialID);
                     res.status(201).send(objMessage);
@@ -767,10 +771,10 @@ app.get("/products", (req,res,next) => {
         });
     });
 });
-app.get("/rawmaterials", (req,res,next) => {
+app.get("/materials", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     getSessionDetails(strSessionID,function(objSession){
-        pool.query("SELECT * FROM tblRawMaterials WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
+        pool.query("SELECT * FROM tblMaterials WHERE FarmID = ?",objSession.User.Farm.FarmID, function(error,results){
             if(!error){
                 res.status(200).send(results)
             } else {
@@ -914,28 +918,31 @@ app.put("/farms", (req,res,next) => {
   
  
 
-  app.put("/rawmaterial",(req,res,next)=> {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strRawMaterialID = req.query.rawmaterialid || req.body.rawmaterialid;
-    let strDescription = req.query.description || req.body.description;
-    let strRelatedProduct = req.query.shortname || req.body.shortname;
-    let strQuantity = req.query.quantity || req.body.quantity;
-    let strUnitOfMeasure = req.query.unitofmeasure || req.body.unitofmeasure;
-    let strCost = req.query.cost || req.body.cost;
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession){
-            pool.query("UPDATE tblRawMaterial SET Description = ?, RelatedProduct = ?, Quantity = ?, UnitOfMeasure = ?, Cost = ? WHERE MaterialID = ?", [strDescription, strRelatedProduct, strQuantity, strUnitOfMeasure, strCost, strRawMaterialID], function(error,results){
-                if(!error){
-                    let objMessage = new Message("Success","Raw Material Updated");
-                    res.status(200).send(objMessage);
-                } else {
-                    let objError = new Message("Error",error);
-                    res.status(500).send(objError);
-                }
-            });
+app.put("/materials",(req,res,next)=> {
+    let strSessionID = req.body.sessionid;
+    let strMaterialID = req.body.materialid;
+    let strMaterial = req.body.material;
+    let strMaterialDescription = req.body.materialdescription;
+    let strQuantity = req.body.quantity;
+    let strUnitOfMeasure2 = req.body.unitofmeasure2;
+    let strCost = req.body.cost;
+    getSessionDetails(strSessionID, function(objSession) {
+        if (objSession) {
+            pool.query("UPDATE tblMaterials SET material=?, description=?, quantity=?, unitofmeasure2=?, cost=? WHERE MaterialID = ?",
+                        [strMaterial, strMaterialDescription, strQuantity, strUnitOfMeasure2, strCost, strMaterialID],
+                        function(error, results) {
+                            if (!error) {
+                                let objMessage = new Message("Success", "Raw Material Updated");
+                                res.status(200).send(objMessage);
+                            } else {
+                                let objError = new Message("Error", error);
+                                res.status(500).send(objError);
+                            }
+                        });
         }
     });
 });
+
 
 app.put("/unitofmeasure",(req,res,next)=> {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -1082,16 +1089,12 @@ app.delete("/positions", (req,res,next) => {
 
 
 
-app.delete("/rawmaterials", (req,res,next) => {
+app.delete("/materials", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strMaterialID = uuidv4();
-    let strRelatedProduct = req.query.shortname || req.body.shortname;
-    let strQuantity = req.query.longname || req.body.longname;
-    let strUnitOfMeasure = req.query.description || req.body.description;
-    let strCost = req.query.description || req.body.description;
+    let strMaterialID = req.query.materialid || req.body.materialid;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("DELETE FROM tblRawMaterials WHERE MaterialID = ?, RelatedProduct = ?, Quantity = ?, UnitOfMeasure = ?, Cost = ?",[strMaterialID, strQuantity, strUnitOfMeasure, strCost, strRelatedProduct], function(error,results){
+            pool.query("DELETE FROM tblMaterials WHERE MaterialID=?",[strMaterialID], function(error,results){
                 if(!error){
                     let objMessage = new Message("Success","Raw Material Deleted");
                     res.status(202).send(objMessage)

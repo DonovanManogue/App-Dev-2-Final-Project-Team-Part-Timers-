@@ -1099,226 +1099,241 @@ $(document).ready(function() {
       });
 
 
-      function loadMaterials() {
-        $.ajax({
-          url: strBaseURL + '/Materials',
-          method: 'GET',
-          data: {
-            sessionid: sessionStorage.getItem('session')
-          },
-          success: function(data) {
-            console.log('Materials loaded:', data);
-            $.ajax({
-              url: strBaseURL+'/Materials/count',
-              method: 'GET',
-              dataType: 'json',
-              success: function(data) {
-                var numMaterials = data.numMaterials;
-                var completeMaterials = data.completeMaterials;
-                var incompleteMaterials = data.incompleteMaterials;
-      
-            // Display the number of workers and total pay in the "#numWorkersTable" table
-            var newRow = $('<tr>').append(
-              $('<td>').text(numMaterials),
-              $('<td>').text(completeMaterials),
-              $('<td>').text(incompleteMaterials)
-              
-            );
-            $('#numMaterialsTable tbody').empty().append(newRow);
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                console.error(errorThrown);
-              }
-            })
-            $('#MaterialTable tbody').empty();
-            // Append the new worker records to the table
-            $.each(data, function(index, Material) {
-              $('#MaterialTable tbody').append('<tr><td>'+ Material.MaterialID +'</td><td>' + Material.MaterialName +
-              '</td><td>' +Material.Notes + '</td><td>' + Material.MaterialStartTime + '</td><td>' + Material.MaterialEndTime+'</td><td>'+ Material.Status+ '</td><td>'+Material.FarmID+ '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
-            });
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.error(errorThrown);
-          }
-        })
-      }
-    
       $(document).ready(function() {
-    
-        loadMaterials();
-        
-          $('#addMaterialForm').submit(function(event) {
-            event.preventDefault();
-            var txtMaterial = $('#txtMaterial').val();
-            var txtNotes = $('#txtMaterialNotes').val();
-            var txtStatus = $('#txtMaterialStatus').val();
-            var txtMaterialStartTime = $('#txtMaterialStartTime').val();
-            var txtMaterialEndTime = $('#txtMaterialEndTime').val();
-              // Generate and return a UUID v4 string
-        
-        
-              $.ajax({  
-                url: strBaseURL + '/Materials',
-                method: 'POST',
-                data: {
-                  Material: txtMaterial,
-                  notes: txtNotes,
-                  status: txtStatus,
-                  Materialstarttime: txtMaterialStartTime,
-                  Materialendtime: txtMaterialEndTime,
-                  sessionid: sessionStorage.getItem('session')
-                },
-                success: function(response) {
-                  console.log('Material added:', response);
-                  console.log(txtMaterial);
-                  console.log(txtNotes);
-                  console.log(txtStatus);
-                  console.log(txtMaterialStartTime);
-                  console.log(txtMaterialEndTime);
-  
-                  loadMaterials();
-                  
-                  // Append a new row to the tbody of #workersTable
-                  var newRow = $('<tr>').append(
-                    $('<td>').text(response.MaterialID),
-                    $('<td>').text(txtMaterial),
-                    $('<td>').text(txtNotes),
-                    $('<td>').text(txtMaterialStartTime),
-                    $('<td>').text(txtMaterialEndTime),
-                    $('<td>').text(txtStatus),
-                    $('<td>').text(response.FarmID),
-                    $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
-                  );
-                  $('#MaterialTable tbody').append(newRow);
-                  
-                  // Hide the modal and reset the form
-                  $('#addMaterialModal').modal('hide');
-                  $('#addMaterialForm')[0].reset();
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                  console.error(errorThrown);
-                }
-              });
-            });      
-            
-          
-          /// Open edit modal when edit button is clicked
-          $('#MaterialTable').on('click', '.editButton', function() {
-            var currentRow = $(this).closest('tr');
-            console.log(currentRow);
-            var txtMaterialID = currentRow.find('td:first').text();
-            var txtMaterial = currentRow.find('td:eq(1)').text();
-            var txtNotes = currentRow.find('td:eq(2)').text();
-            var txtMaterialStartTime = currentRow.find('td:eq(3)').text();
-            var txtMaterialEndTime = currentRow.find('td:eq(4)').text();
-            var txtStatus = currentRow.find('td:eq(5)').text();
-            var txtFarmID = currentRow.find('td:eq(6)').text();
-  
-    
-           console.log(txtMaterialID);
-            console.log(txtMaterial);
-            console.log(txtNotes);
-            console.log(txtMaterialStartTime);
-            console.log(txtMaterialEndTime);
-            console.log(txtStatus);
-            console.log(txtFarmID);
-      
-        
-          $('#editMaterialModal #edittxtMaterial').val(txtMaterial);
-          $('#editMaterialModal #edittxtNotes').val(txtNotes);
-          $('#editMaterialModal #edittxtStartTime').val(txtMaterialStartTime);
-          $('#editMaterialModal #edittxtEndTime').val(txtMaterialEndTime);
-          $('#editMaterialModal #edittxtStatus').val(txtStatus);
-          $('#editMaterialModal #editIndex').val(currentRow.index());
-          $('#editMaterialModal').modal('show');
-        });
-        
-        $('#editMaterialModal #editMaterialForm').submit(function(event) {
-          event.preventDefault();
-          var txtMaterial = $('#editMaterialModal #edittxtMaterial').val();
-          var txtNotes = $('#editMaterialModal #edittxtMaterialNotes').val();
-          var txtMaterialStartTime = $('#editMaterialModal #edittxtMaterialStartTime').val();
-          var txtMaterialEndTime = $('#editMaterialModal #edittxtMaterialEndTime').val();
-          var txtStatus = $('#editMaterialModal #edittxtMaterialStatus').val();
-          var currentRow = $('#MaterialTable tbody tr:eq(' + $('#editMaterialModal #editIndex').val() + ')');
-          var txtMaterialID = currentRow.find('td:first').text(); // Define variable for MaterialID
-          var txtFarmID = currentRow.find('td:eq(6)').text(); // Define variable for FarmID
-          currentRow.find('td:first').text(txtMaterialID);
-          currentRow.find('td:eq(1)').text(txtMaterial);
-          currentRow.find('td:eq(2)').text(txtNotes);
-          currentRow.find('td:eq(3)').text(txtMaterialStartTime);
-          currentRow.find('td:eq(4)').text(txtMaterialEndTime);
-          currentRow.find('td:eq(5)').text(txtStatus);
-          currentRow.find('td:eq(6)').text(txtFarmID);
-          $('#editMaterialModal').modal('hide');
-        
-          // Send PUT request to server to update worker position
-        
+
+        function loadMaterials() {
           $.ajax({
-            url: strBaseURL+"/Materials",
-            method: "PUT",
+            url: strBaseURL + '/materials',
+            method: 'GET',
             data: {
-              
-              Material: txtMaterial,
-              notes: txtNotes,
-              status: txtStatus,
-              Materialstarttime: txtMaterialStartTime,
-              Materialendtime: txtMaterialEndTime,
+              sessionid: sessionStorage.getItem('session')
+            },
+            success: function(data) {
+              console.log('Materials loaded:', data);
+              // Clear the existing table rows
+              $('#MaterialTable tbody').empty();
+      
+              // Append the new worker records to the table
+              $.each(data, function(index, Material) {
+                $('#MaterialTable tbody').append(
+                  '<tr>' +
+                    '<td>' + Material.MaterialID + '</td>' +
+                    '<td>' + Material.Material + '</td>' +
+                    '<td>' + Material.Description + '</td>' +
+                    '<td>' + Material.RecordedDateTime + '</td>' +
+                    '<td>' + Material.Quantity + '</td>' +
+                    '<td>' + Material.UnitOfMeasure2 + '</td>' +
+                    '<td>' + Material.Cost + '</td>' +
+                    '<td>' + Material.FarmID + '</td>' +
+                    '<td>' +
+                      '<button type="button" class="btn btn-success editButton">Edit</button> ' +
+                      '<button type="button" class="btn btn-danger deleteButton">Delete</button>' +
+                    '</td>' +
+                  '</tr>'
+                );
+              });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error(errorThrown);
+            }
+          })
+        }
+      
+        loadMaterials();
+      
+        $('#addMaterialForm').submit(function(event) {
+          event.preventDefault();
+      
+          var txtMaterial = $('#txtMaterial').val();
+          var txtMaterialDescription = $('#txtMaterialDescription').val();
+          var txtRelatedProduct = $('#txtRelatedProduct').val();
+          var txtQuantity = $('#txtMaterialQuantity').val();
+          var txtUnitOfMeasure2 = $('#txtMaterialUnitOfMeasure').val();
+          var txtCost = $('#txtCost').val();
+
+        
+        
+          $.ajax({  
+            url: strBaseURL + '/materials',
+            method: 'POST',
+            data: {
+              material: txtMaterial,
+              materialdescription: txtMaterialDescription,
+              quantity: txtQuantity,
+              unitofmeasure2: txtUnitOfMeasure2,
+              cost: txtCost,
               sessionid: sessionStorage.getItem('session')
             },
             success: function(response) {
-              console.log(response);
+              console.log('Material added:', response);
               console.log(txtMaterial);
-              console.log(txtNotes);
-              console.log(txtStatus);
-              console.log(txtMaterialStartTime);
-              console.log(txtMaterialEndTime);
-              loadMaterials();
-            },
-            error: function(xhr, statusText, error) {
-              console.log(error);
-              // handle error
-            }
-          });
-        });
-        let txtMaterialID;
-         // Open delete modal when delete button is clicked
-         $('#MaterialTable').on('click', '.deleteButton', function() {
-          var currentRow = $(this).closest('tr');
-          txtMaterialID = currentRow.find('td:first').text(); // Get the product ID from the first column of the row
-          console.log(txtMaterialID);
-          $('#deleteMaterialModal #deleteIndex').val(currentRow.index());
-          $('#deleteMaterialModal').modal('show');
-        });
-      
-        // Delete Material when delete button is clicked in delete modal
-        $('#deleteButtonMaterial').click(function() {
-          var deleteIndex = $('#deleteMaterialModal #deleteIndex').val();
-          var currentRow = $('#MaterialTable tbody tr:eq(' + deleteIndex + ')');
-          txtMaterialID;
-          currentRow.remove();
-          $('#deleteMaterialModal').modal('hide');
-        
-          // Send DELETE request to server to delete Material
-          $.ajax({
-            url: strBaseURL + "/Materials" + "?Materialid=" + txtMaterialID + "&sessionid=" + sessionStorage.getItem('session'),
-            method: "DELETE",
-            success: function(response) {
-              console.log(txtMaterialID);
-              console.log(response);
+              console.log(txtMaterialDescription);
+              console.log(txtQuantity);
+              console.log(txtUnitOfMeasure2);
+              console.log(txtCost);
           
               loadMaterials();
-              // handle success response
+              
+              // Append a new row to the tbody of #workersTable
+              var newRow = $('<tr>').append(
+                $('<td>').text(response.MaterialID),
+                $('<td>').text(txtMaterial),
+                $('<td>').text(txtMaterialDescription),
+                $('<td>').text(txtRelatedProduct),
+                $('<td>').text(response.RecordedDateTime),
+                $('<td>').text(txtQuantity),
+                $('<td>').text(txtUnitOfMeasure2),
+                $('<td>').text(txtCost),
+                $('<td>').text(response.FarmID),
+                $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
+              );
+              $('#MaterialTable tbody').append(newRow);
+              
+              // Hide the modal and reset the form
+              $('#addMaterialModal').modal('hide');
+              $('#addMaterialForm')[0].reset();
             },
-            error: function(xhr, statusText, error) {
-              console.log(error);
-              // handle error
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error(errorThrown);
             }
           });
-        });
+            });      
+            
+            var txtMaterialID;
+          /// Open edit modal when edit button is clicked
+          $('#MaterialTable').on('click', '.editButton', function() {
+            var currentRow = $(this).closest('tr');
+            console.log(currentRow)
+           txtMaterialID = currentRow.find('td:first').text();
+            console.log(txtMaterialID);
+            var txtMaterial = currentRow.find('td:eq(1)').text();
+            var txtMaterialDescription = currentRow.find('td:eq(2)').text();
+            var txtMaterialDateTime = currentRow.find('td:eq(3)').text();
+            var txtQuantity = currentRow.find('td:eq(4)').text();
+            var txtUnitOfMeasure2 = currentRow.find('td:eq(5)').text();
+            var txtCost = currentRow.find('td:eq(6)').text();
+            
+
+            
+            console.log(txtMaterialID);
+            
+            $('#editMaterialModal #edittxtMaterialID').val(txtMaterialID);
+            console.log(txtMaterialID);
+            
+            $('#editMaterialModal #edittxtMaterial').val(txtMaterial);
+            $('#editMaterialModal #edittxtMaterialDescription').val(txtMaterialDescription);
+            $('#editMaterialModal #edittxtMaterialQuantity').val(txtQuantity);
+            $('#editMaterialModal #edittxtMaterialUnitOfMeasure').val(txtUnitOfMeasure2);
+            $('#editMaterialModal #edittxtCost').val(txtCost);
+            $('#editMaterialModal #editIndex').val(currentRow.index());
+            $('#editMaterialModal').modal('show');
+            
+            });
+            
+            $('#editMaterialModal #editMaterialForm').submit(function(event) {
+            event.preventDefault();
+            
+     
+            
+            
+            console.log(txtMaterialID); // Get the Material ID from the edit modal
+            var txtMaterial = $('#editMaterialModal #edittxtMaterial').val();
+            var txtMaterialDescription = $('#editMaterialModal #edittxtMaterialDescription').val();
+            var txtQuantity = $('#editMaterialModal #edittxtMaterialQuantity').val();
+            var txtUnitOfMeasure2 = $('#editMaterialModal #edittxtMaterialUnitOfMeasure').val();
+            var txtCost = $('#editMaterialModal #edittxtCost').val();
+            var currentRow = $('#MaterialTable tr').eq($('#editIndex').val());
+            var txtFarmID = currentRow.find('td:eq(7)').text();
+            
+            currentRow.find('td:first').text(txtMaterialID);
+            console.log(txtMaterialID)
+            currentRow.find('td:eq(1)').text(txtMaterial);
+            currentRow.find('td:eq(2)').text(txtMaterialDescription);
+            currentRow.find('td:eq(4)').text(txtQuantity);
+            currentRow.find('td:eq(5)').text(txtUnitOfMeasure2);
+            currentRow.find('td:eq(6)').text(txtCost);  
+            currentRow.find('td:eq(7)').text(txtFarmID);
+            $('#editMaterialModal').modal('hide');
+            
+            // Send PUT request to server to update Material position
+            $.ajax({
+              url: strBaseURL+"/materials",
+              method: "PUT",
+              data: {
+                materialid: txtMaterialID,
+                material: txtMaterial,
+                materialdescription: txtMaterialDescription,
+                quantity: txtQuantity,
+                unitofmeasure2: txtUnitOfMeasure2,
+                cost: txtCost,
+                sessionid: sessionStorage.getItem('session')
+              },
+              success: function(response) {
+                console.log(response);
+                console.log(txtMaterial);
+                console.log(txtMaterialDescription);
+                console.log(txtQuantity);
+                console.log(txtUnitOfMeasure2);
+                console.log(txtCost);
+                console.log(txtMaterialID)
+                loadMaterials();
+              },
+              error: function(xhr, statusText, error) {
+                console.log(error);
+                // handle error
+              }
+            });
+            
+            });
+          
+            
+            // Open delete modal when delete button is clicked
+            $('#MaterialTable').on('click', '.deleteButton', function() {
+            var currentRow = $(this).closest('tr');
+            txtMaterialID = currentRow.find('td:first').text(); // Get the Material ID from the first column of the row
+            
+  
+            
+            $('#deleteMaterialModal #deleteIndex').val(currentRow.index());
+            $('#deleteMaterialModal').modal('show');
+            
+            });
+            
+            // Delete Material when delete button is clicked in delete modal
+            $('#deleteButtonMaterial').click(function() {
+            var deleteIndex = $('#deleteMaterialModal #deleteIndex').val();
+            var currentRow = $('#MaterialTable tbody tr:eq(' + deleteIndex + ')');
+            
         
-        // Clear input fields on modal dismiss
-        $('#addMaterialModal, #editTaskModal').on('hidden.bs.modal', function() {
-          $(this).find('form')[0].reset();
-        });
-        });
+            
+            currentRow.remove();
+            $('#deleteMaterialModal').modal('hide');
+            
+            // Send DELETE request to server to delete Material
+            $.ajax({
+              url: strBaseURL + "/materials",
+              method: "DELETE",
+              data: {
+                materialid: txtMaterialID,
+                sessionid: sessionStorage.getItem('session')
+              },
+              success: function(response) {
+                console.log(txtMaterialID);
+                console.log(response);
+            
+                loadMaterials();
+                // handle success response
+              },
+              error: function(xhr, statusText, error) {
+                console.log(error);
+                // handle error
+              }
+            });
+            
+            });
+            
+            // Clear input fields on modal dismiss
+            $('#addMaterialModal, #editTaskModal').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+            });
+            });

@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/uuid@3.4.0/dist/umd/uuidv4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-hippieblue" id="navMain" style="display:none; ">
@@ -709,8 +710,8 @@
                         <thead>
                           <tr class="bg-dark text-white">
                             <th>MaterialID</th>
+                            <th>Material</th>
                             <th>Description</th>
-                            <th>RecordedByUser</th>
                             <th>RecordedDateTime</th>
                             <th>Quantity</th>
                             <th>UnitOfMeasure</th>
@@ -747,16 +748,12 @@
                           <label for="txtMaterialDescription">Description:</label>
                           <input type="text" class="form-control" id="txtMaterialDescription" required>
                         </div>
-                        <div class="form-group">
-                        <label for="txtRelatedProduct">RelatedProduct:</label>
-                        <input type="text" class="form-control" id="txtRelatedProduct" required>
-                      </div>
                       <div class="form-group">
                         <label for="txtMaterialQuantity">Quantity:</label>
                         <input type="text" class="form-control" id="txtMaterialQuantity" required>
                       </div>
                       <div class="form-group">
-                        <label for="txtMaterialUnitOfMeasure">UnitOfMeasure:</label>
+                        <label for="txtMaterialUnitOfMeasure2">UnitOfMeasure:</label>
                         <input type="text" class="form-control" id="txtMaterialUnitOfMeasure" required>
                       </div>
                       <div class="form-group">
@@ -792,16 +789,12 @@
                           <label for="edittxtMaterialDescription">Description:</label>
                           <input type="text" class="form-control" id="edittxtMaterialDescription" required>
                         </div>
-                        <div class="form-group">
-                        <label for="edittxtRelatedProduct">RelatedProduct:</label>
-                        <input type="text" class="form-control" id="edittxtRelatedProduct" required>
-                      </div>
                       <div class="form-group">
                         <label for="edittxtMaterialQuantity">Quantity:</label>
                         <input type="text" class="form-control" id="edittxtMaterialQuantity" required>
                       </div>
                       <div class="form-group">
-                        <label for="edittxtMaterialUnitOfMeasure">UnitOfMeasure:</label>
+                        <label for="edittxtMaterialUnitOfMeasure2">UnitOfMeasure:</label>
                         <input type="text" class="form-control" id="edittxtMaterialUnitOfMeasure" required>
                       </div>
                       <div class="form-group">
@@ -842,6 +835,7 @@
     <div class="divReports row vh-100 justify-content-center align-items-center flex-wrap">
       <div class="col-12 h-100 card1 border-0" style="position:absolute; top: 68px;">
         <h2 class="text-center text-white card-header">REPORTS</h2>
+        <canvas id="WorkersChart" width="400" height="400"></canvas>
         </div>
         </div>
   </div>
