@@ -363,11 +363,12 @@ app.put("/position", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductName = req.query.productname || req.body.productname;
     let strDescription = req.query.description || req.body.description;
+    let strPrice = req.query.price || req.body.price;
     let strStatus = req.query.status || req.body.status;
     let strProductID = req.query.productid || req.body.productid;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("UPDATE tblProducts SET ProductName =?, Description = ?, Status =? WHERE ProductID = ?", [strProductName, strDescription,strStatus,strProductID], function(error,results){
+            pool.query("UPDATE tblProducts SET ProductName =?, Description = ?,Price=?, Status =? WHERE ProductID = ?", [strProductName, strDescription,strPrice,strStatus,strProductID], function(error,results){
                 if(!error){
                     let objMessage = new Message("Success","Product Updated");
                     res.status(200).send(objMessage);
@@ -481,9 +482,10 @@ app.post("/products",(req,res)=> {
     let strProductID = uuidv4();
     let strProductName = req.query.productname || req.body.productname;
     let strDescription = req.query.description || req.body.description;
+    let strPrice = req.query.price || req.body.price;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?, 'ACTIVE',?)",[strProductID,strProductName,strDescription,objSession.User.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblProducts VALUES(?, ?, ?,?, 'ACTIVE',?)",[strProductID,strProductName,strDescription,strPrice,objSession.User.Farm.FarmID], function(error, results){
                 if(!error){
                     let objMessage = new Message("ProductID",strProductID);
                     res.status(201).send(objMessage);

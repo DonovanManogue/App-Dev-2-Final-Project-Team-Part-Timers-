@@ -13,7 +13,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/uuid@3.4.0/dist/umd/uuidv4.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-hippieblue" id="navMain" style="display:none; ">
@@ -42,9 +41,7 @@
           <li class="nav-item">
             <a class="nav-link active" id="linkInventory" href="#">Materials</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link active" id="linkReports" href="#">Reports</a>
-          </li>
+
           <li class="nav-item">
             <a class="nav-link active" id="linkLogout" href="#">Logout</a>
           </li>
@@ -349,6 +346,7 @@
                   <th>ProductID</th>
                   <th>Product</th>
                   <th>Description</th>
+                  <th>Cost</th>
                   <th>Status</th>
                   <th>FarmID</th>
                   <th>Actions</th>
@@ -383,6 +381,10 @@
             <label for="txtDescription">Description:</label>
             <input type="text" class="form-control" id="txtDescription" required>
           </div>
+          <div class="form-group">
+            <label for="txtPrice">Cost:</label>
+            <input type="text" class="form-control" id="txtPrice" required>
+          </div>
           <button type="submit" class="btn btn-primary">Add to Table</button>
         </form>
       </div>
@@ -409,6 +411,10 @@
           <div class="form-group">
             <label for="edittxtDescription">Despcription:</label>
             <input type="text" class="form-control" id="edittxtDescription" required>
+          </div>
+          <div class="form-group">
+            <label for="edittxtPrice">Cost:</label>
+            <input type="text" class="form-control" id="edittxtPrice" required>
           </div>
           <div class="form-group">
             <label for="edittxtStatus">Status:</label>
@@ -835,7 +841,7 @@
     <div class="divReports row vh-100 justify-content-center align-items-center flex-wrap">
       <div class="col-12 h-100 card1 border-0" style="position:absolute; top: 68px;">
         <h2 class="text-center text-white card-header">REPORTS</h2>
-        <canvas id="WorkersChart" width="400" height="400"></canvas>
+        <canvas id="chartContainer" style="height: 370px; width: 100%;"></canvas>
         </div>
         </div>
   </div>
@@ -844,6 +850,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="script.js"></script>
 </html>
 

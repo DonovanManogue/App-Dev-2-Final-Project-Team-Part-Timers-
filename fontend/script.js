@@ -378,7 +378,6 @@ loadWorkers();
             $('<td>').text(txtUser),
             $('<td>').text(txtTitle),
             $('<td>').text(txtPayRate),
-            $('<td>').text(workerDate),
             $('<td>').text(response.FarmID),
             $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
           );
@@ -512,7 +511,6 @@ function loadProducts() {
         dataType: 'json',
         success: function(data) {
           var numProducts = data.numProducts;
-          var totalPay = data.totalPay;
 
       // Display the number of workers and total pay in the "#numWorkersTable" table
       var newRow = $('<tr>').append(
@@ -527,7 +525,7 @@ function loadProducts() {
       })
       // Append the new worker records to the table
       $.each(data, function(index, product) {
-        $('#productTable tbody').append('<tr><td>'+ product.ProductID +'</td><td>' + product.ProductName + '</td><td>' + product.Description +
+        $('#productTable tbody').append('<tr><td>'+ product.ProductID +'</td><td>' + product.ProductName + '</td><td>' + product.Description+'</td><td>' + product.Price +
         '</td><td>' + product.Status + '</td><td>' + product.FarmID + '</td><td><button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button></td></tr>');
       });
     },
@@ -547,6 +545,7 @@ $(document).ready(function() {
       var txtProduct = $('#txtProduct').val();
       var txtDescription = $('#txtDescription').val();
       var txtStatus = $('#txtStatus').val();
+      var txtPrice = $('#txtPrice').val();
         // Generate and return a UUID v4 string
   
   
@@ -556,6 +555,7 @@ $(document).ready(function() {
           data: {
             productname: $('#txtProduct').val(),
             description: $('#txtDescription').val(),
+            price: $('#txtPrice').val(),
             status: $('#txtStatus').val(),
             sessionid: sessionStorage.getItem('session')
           },
@@ -568,6 +568,7 @@ $(document).ready(function() {
               $('<td>').text(response.ProductID),
               $('<td>').text(txtProduct),
               $('<td>').text(txtDescription),
+              $('<td>').text(txtPrice),
               $('<td>').text(txtStatus),
               $('<td>').text(response.FarmID),
               $('<td>').html('<button type="button" class="btn btn-success editButton">Edit</button> <button type="button" class="btn btn-danger deleteButton">Delete</button>')
@@ -592,16 +593,19 @@ $(document).ready(function() {
       txtProductID = currentRow.find('td:first').text();
       var txtProduct = currentRow.find('td:eq(1)').text();
       var txtDescription = currentRow.find('td:eq(2)').text();
-      var txtStatus = currentRow.find('td:eq(3)').text();
+      var txtPrice = currentRow.find('td:eq(3)').text();
+      var txtStatus = currentRow.find('td:eq(4)').text();
       console.log("txtProductID:" + txtProductID);
       console.log("txtProduct:" + txtProduct);
       console.log("txtDescription:" + txtDescription);
+      console.log("txtPrice:" + txtPrice);
       console.log("txtStatus:" + txtStatus);
 
   
   
     $('#editProductModal #edittxtProduct').val(txtProduct);
     $('#editProductModal #edittxtDescription').val(txtDescription);
+    $('#editProductModal #edittxtPrice').val(txtPrice);
     $('#editProductModal #edittxtStatus').val(txtStatus);
     $('#editProductModal #editIndex').val(currentRow.index());
     $('#editProductModal').modal('show');
@@ -611,12 +615,14 @@ $(document).ready(function() {
     event.preventDefault();
     var txtProduct = $('#editProductModal #edittxtProduct').val();
     var txtDescription = $('#editProductModal #edittxtDescription').val();
+    var txtPrice = $('#editProductModal #edittxtPrice').val();
     var txtStatus = $('#editProductModal #edittxtStatus').val();
     var currentRow = $('#productTable tbody tr:eq(' + $('#editProductModal #editIndex').val() + ')');
     currentRow.find('td:first').text(txtProductID);
     currentRow.find('td:eq(1)').text(txtProduct);
     currentRow.find('td:eq(2)').text(txtDescription);
-    currentRow.find('td:eq(3)').text(txtStatus);
+    currentRow.find('td:eq(3)').text(txtPrice);
+    currentRow.find('td:eq(4)').text(txtStatus);
     $('#editProductModal').modal('hide');
   
     // Send PUT request to server to update worker position
@@ -628,6 +634,7 @@ $(document).ready(function() {
         productid: txtProductID,
         productname: txtProduct,
         description: txtDescription,
+        price: txtPrice,
         status: txtStatus,
         sessionid: sessionStorage.getItem('session')
       },
@@ -636,6 +643,7 @@ $(document).ready(function() {
         console.log(txtProductID);
         console.log(txtProduct);
         console.log(txtDescription);
+        console.log(txtPrice);
         console.log(txtStatus);
       
         loadProducts();
@@ -1337,3 +1345,5 @@ $(document).ready(function() {
             $(this).find('form')[0].reset();
             });
             });
+
+            
