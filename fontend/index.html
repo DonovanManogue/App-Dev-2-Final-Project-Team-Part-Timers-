@@ -200,18 +200,16 @@
                         <h3 class="col-12 text-center ">Tasks</h3>
                       </div>
                       <div class="card-body">
-                        <table class="table table-striped-columns"> 
-                          <tr>
-                            <th># of Tasks</td>
+                        <table class="table table-bordered"id="numTasksTable"> 
+                          <thead>
+                          <tr class="bg-dark text-white">
+                            <th># of Tasks</th>
+                            <th># of Tasks Completed</th>
+                            <th># of Tasks Incompleted</th>
                           </tr>
-                          <tr>
-                            <th># of Tasks Complete</td>
-                          </tr>
-                          <tr>
-                            <th># of Tasks Incomplete</td>
-                          </tr>
-    
-                        </table>
+                        </thead>
+                        <tbody>
+                      </table>
                       </div>
                       </div>
                     </div>
@@ -457,7 +455,8 @@
                           <thead>
                             <tr class="bg-dark text-white">
                               <th>HarvestID</th>
-                              <th>ProductID</th>
+                              <th>Product</th>
+                              <th>Unit Of Measure</th>
                               <th>HarvestDateTime</th>
                               <th>Quantity</th>
                               <th>FarmID</th>
@@ -486,9 +485,14 @@
         <div class="modal-body">
           <form id="addHarvestForm">
             <div class="form-group">
-              <label for="txtHarvestProduct">ProductID:</label>
+              <label for="txtHarvestProduct">Product:</label>
               <input type="text" class="form-control" id="txtHarvestProduct" required>
             </div>
+            <form id="addHarvestForm">
+              <div class="form-group">
+                <label for="txtUnitOfMeasure">Unit Of Measure:</label>
+                <input type="text" class="form-control" id="txtUnitOfMeasure" required>
+              </div>
               <div class="form-group">
               <label for="txtQuantity">Quantity:</label>
               <input type="number" class="form-control" id="txtQuantity" required>
@@ -516,6 +520,11 @@
               <label for="edittxtHarvestProduct">Product:</label>
               <input type="text" class="form-control" id="edittxtHarvestProduct" required>
             </div>
+            <form id="editHarvestForm">
+              <div class="form-group">
+                <label for="edittxtUnitOfMeasure">Unit Of Measure:</label>
+                <input type="text" class="form-control" id="edittxtUnitOfMeasure" required>
+              </div>
             <div class="form-group">
               <label for="edittxtQuantity">Quantity:</label>
               <input type="number" class="form-control" id="edittxtQuantity" required>
@@ -562,8 +571,10 @@
                       <thead>
                         <tr class="bg-dark text-white">
                           <th>TaskID</th>
-                          <th>TaskName</th>
+                          <th>Task</th>
                           <th>Notes</th>
+                          <th>TaskStartTime</th>
+                          <th>TaskEndTime</th>
                           <th>Status</th>
                           <th>FarmID</th>
                           <th>Actions</th>
@@ -577,58 +588,255 @@
               </div>
             </div>
           </div>
-  
 
-      <div id="divInventory" style="display: none;">
-      <div class="divInventory row vh-100 justify-content-center align-items-center flex-wrap">
-        <div class="col-12 h-100 card3 border-0" style="position:absolute; top: 68px; ">
-          <div class="col-12 card">
-            <h2 class="text-center card-header">Inventory</h2>
-            <div class="card-body">
-              <div class="row"> 
-                <div class="col-md-12">
-                    <input type="button" id="#btnAddMaterials" class="btn btn-primary" value="Add New" />
+
+          <div class="modal" id="addTaskModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Task</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="addTaskForm">
+                    <div class="form-group">
+                      <label for="txtTask">Task:</label>
+                      <input type="text" class="form-control" id="txtTask" required>
+                    </div>
+                    <form id="addTaskForm">
+                      <div class="form-group">
+                        <label for="txtTaskNotes">Notes:</label>
+                        <input type="text" class="form-control" id="txtTaskNotes" required>
+                      </div>
+                      <div class="form-group">
+                      <label for="txtTaskStartTime">StartTime :</label>
+                      <input type="time" class="form-control" id="txtTaskStartTime" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="txtTaskEndTime">EndTime :</label>
+                      <input type="time" class="form-control" id="txtTaskEndTime">
+                    </div>
+                    <div class="form-group">
+                      <label for="txtTaskStatus">Status :</label>
+                      <select class="form-control" id="txtTaskStatus"  required>
+                        <option value="">Select status</option>
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                      </select>
+                      
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Table</button>
+                  </form>
                 </div>
               </div>
-            <div class="row">
-              <table id="tblMaterials" class="table table-bordered">
-                <thead>
-                  <tbody>
-                <tr class="bg-dark text-white">
-                  <th>MaterialID</th>
-                  <th>Description</th>
-                  <th>RelatedProduct</th>
-                  <th>RecordedByUser</th>
-                  <th>RecordedDateTime</th>
-                  <th>Quantity</th>
-                  <th>UnitOfMeasure</th>
-                  <th>Cost</th>
-                  <th>FarmID</th>
-                  <th>Actions</th>
-                </tr>
-              </tbody>
-              </thead>
             </div>
-            <div class="row">
-              <table class="table table-bordered">
-                <thead>
-                <tbody>
-                <tr>
-              
-                </tr>
-              </tbody>
-              </thead>
-              </table>
-            </div>
-            </div>
-      
-            </div>
-      
-            
-      
-            </div>
+          </div>
+          
+          <div class="modal" id="editTaskModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Task</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="editTaskForm">
+                    <input type="hidden" id="editIndex" value="">
+                  <form id="addTaskForm">
+                    <div class="form-group">
+                      <label for="edittxtTaskNotes">Notes:</label>
+                      <input type="text" class="form-control" id="edittxtTaskNotes">
+                    </div>
+                  <div class="form-group">
+                    <label for="edittxtTaskEndTime">EndTime :</label>
+                    <input type="time" class="form-control" id="edittxtTaskEndTime">
+                  </div>
+                  <div class="form-group">
+                    <label for="edittxtTaskStatus">Status :</label>
+                    <select class="form-control" id="edittxtTaskStatus"  required>
+                      <option value="">Select status</option>
+                      <option value="Not Started">Not Started</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Delayed">Delayed</option>
+                    </select>
+                  </div>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                  </form>
+                </div>
               </div>
-        </div>
+            </div>
+          </div>
+          
+          
+          <div class="modal" id="deleteTaskModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Delete Task</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to delete this Task?</p>
+                  <input type="hidden" id="deleteIndexTask" value="">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <button type="button" id="deleteButtonTask" class="btn btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+
+          <div id="divInventory" style="display: none;">
+            <div class="divInventory row vh-100 justify-content-center align-items-center flex-wrap">
+              <div class="col-12 h-100 card3 border-0" style="position:absolute; top: 68px; ">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="text-center">Inventory</h2>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-bordered" id="MaterialTable">
+                        <thead>
+                          <tr class="bg-dark text-white">
+                            <th>MaterialID</th>
+                            <th>Description</th>
+                            <th>RecordedByUser</th>
+                            <th>RecordedDateTime</th>
+                            <th>Quantity</th>
+                            <th>UnitOfMeasure</th>
+                            <th>Cost</th>
+                            <th>FarmID</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                      </table>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMaterialModal">Add Material</button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="modal" id="addMaterialModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Add Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="addMaterialForm">
+                      <div class="form-group">
+                        <label for="txtMaterial">Material:</label>
+                        <input type="text" class="form-control" id="txtMaterial" required>
+                      </div>
+                        <div class="form-group">
+                          <label for="txtMaterialDescription">Description:</label>
+                          <input type="text" class="form-control" id="txtMaterialDescription" required>
+                        </div>
+                        <div class="form-group">
+                        <label for="txtRelatedProduct">RelatedProduct:</label>
+                        <input type="text" class="form-control" id="txtRelatedProduct" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="txtMaterialQuantity">Quantity:</label>
+                        <input type="text" class="form-control" id="txtMaterialQuantity" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="txtMaterialUnitOfMeasure">UnitOfMeasure:</label>
+                        <input type="text" class="form-control" id="txtMaterialUnitOfMeasure" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="txtCost">Cost:</label>
+                        <input type="number" class="form-control" id="txtCost" required>
+                      </div>
+                        
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add to Table</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="modal" id="editMaterialModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editMaterialForm">
+                      <input type="hidden" id="editIndex" value="">
+                      <div class="form-group">
+                        <label for="edittxtMaterial">Material:</label>
+                        <input type="text" class="form-control" id="edittxtMaterial" required>
+                      </div>
+                        <div class="form-group">
+                          <label for="edittxtMaterialDescription">Description:</label>
+                          <input type="text" class="form-control" id="edittxtMaterialDescription" required>
+                        </div>
+                        <div class="form-group">
+                        <label for="edittxtRelatedProduct">RelatedProduct:</label>
+                        <input type="text" class="form-control" id="edittxtRelatedProduct" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="edittxtMaterialQuantity">Quantity:</label>
+                        <input type="text" class="form-control" id="edittxtMaterialQuantity" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="edittxtMaterialUnitOfMeasure">UnitOfMeasure:</label>
+                        <input type="text" class="form-control" id="edittxtMaterialUnitOfMeasure" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="edittxtCost">Cost:</label>
+                        <input type="text" class="form-control" id="edittxtCost" required>
+                      </div>
+                        
+                      <button type="submit" class="btn btn-primary">Update Material</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="modal" id="deleteMaterialModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Delete Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to delete this Material?</p>
+                    <input type="hidden" id="deleteIndexMaterial" value="">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="deleteButtonMaterial" class="btn btn-danger">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
   <div id="divReports" style="display: none;">
     <div class="divReports row vh-100 justify-content-center align-items-center flex-wrap">

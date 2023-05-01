@@ -262,6 +262,31 @@ app.post("/login", (req, res) => {
         });
       });
 
+        app.get('/tasks/count', (req, res) => {
+        // Get a connection from the pool
+        pool.getConnection((err, conn) => {
+        if (err) {
+        return console.error(err);
+        }
+
+        // Execute query to count number of rows in tblposition
+        const query = `SELECT COUNT(*) AS numTasks, 
+        SUM(CASE WHEN Status IN ('Not Started', 'Delayed', 'In Progress') THEN 1 ELSE 0 END) AS incompleteTasks, 
+        SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) AS completeTasks
+      FROM tblTasks;`;
+        conn.query(query, (err, rows) => {
+        // Release the connection back to the pool
+        conn.release();
+
+        
+        if (err) {
+        return console.error(err);
+        }
+        const result = { numTasks: rows[0].numTasks, completeTasks:rows[0].completeTasks, incompleteTasks:rows[0].incompleteTasks };
+        res.json(result);
+            });
+          });
+        });
 
 
     app.post("/position", (req, res, next) => {
@@ -358,13 +383,14 @@ app.put("/position", (req, res, next) => {
  app.put("/Harvests", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strProductID = req.query.product || req.body.product;
+    let strUnitOfMeasure2 = req.query.unitofmeasure2 || req.body.unitofmeasure2;
     let strQuantity = req.query.quantity || req.body.quantity;
     let strHarvestID = req.query.harvestid || req.body.harvestid;
     getSessionDetails(strSessionID, function (objSession) {
       if (objSession) {
         pool.query(
-          "UPDATE tblHarvest set product=?, set quantity= ? WHERE HarvestID = ?",
-          [strProductID, strQuantity, strHarvestID],
+          "UPDATE tblHarvests set product=?,set unitofmeasure2=?,set harvestdatetime=SYSDATE(), set quantity= ? WHERE HarvestID = ?",
+          [strProductID,strUnitOfMeasure2, strQuantity, strHarvestID],
           function (error, results) {
             if (!error) {
               let objMessage = new Message("Success", "Harvest Updated");
@@ -529,10 +555,12 @@ app.post("/Harvests",(req,res,next)=> {
     let strProductID = req.query.product || req.body.product;
     let strQuantity = req.query.quantity || req.body.quantity;
     let strUnitOfMeasure = req.query.unitofmeasure || req.body.unitofmeasure;
+    let strUnitOfMeasure2 = req.query.unitofmeasure2 || req.body.unitofmeasure2;
+
     
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,SYSDATE(),?,?,?)",[strHarvestID,strProductID,strUser,strQuantity,strUnitOfMeasure,objSession.User.Farm.FarmID], function(error, results){
+            pool.query("INSERT INTO tblHarvests VALUES(?,?,?,SYSDATE(),?,?,?,?)",[strHarvestID,strProductID,strUser,strQuantity,strUnitOfMeasure,objSession.User.Farm.FarmID,strUnitOfMeasure2], function(error, results){
                 if(!error){
                     let objMessage = new Message("HarvestID",strHarvestID);
                     res.status(201).send(objMessage);
@@ -585,18 +613,20 @@ app.post("/farmassignment",(req,res,next)=> {
 app.post("/tasks", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
     let strTaskID = uuidv4();
-    let strTaskName = req.query.taskname || req.body.taskname;
-    let strNote = req.query.note || req.body.note;
+    let strTask = req.query.task || req.body.task;
+    let strNotes = req.query.notes || req.body.notes;
     let strStatus = req.query.status || req.body.status;
+    let strTaskStartTime = req.query.taskstarttime || req.body.taskstarttime;
+    let strTaskEndTime = req.query.taskendtime || req.body.taskendtime;
   
     getSessionDetails(strSessionID, function (objSession) {
       if (objSession) {
         pool.query(
-          "INSERT INTO tblTasks (TaskID, TaskName, Note, Status, FarmID) VALUES (?, ?, ?, ?, ?)",
-          [strTaskID, strTaskName, strNote, strStatus, objSession.User.Farm.FarmID],
+          "INSERT INTO tbltasks (TaskID, TaskName, Notes, Status, FarmID, taskStartTime, taskEndTime) VALUES (?, ?, ?, ?, ?,?,?)",
+          [strTaskID, strTask, strNotes, strStatus, objSession.User.Farm.FarmID, strTaskStartTime, strTaskEndTime],
           function (error, results) {
             if (!error) {
-              let objMessage = new Message("PositionID", strTaskID);
+              let objMessage = new Message("TaskID", strTaskID);
               res.status(201).send(objMessage);
             } else {
               let objMessage = new Message("Error", error);
@@ -610,6 +640,32 @@ app.post("/tasks", (req, res, next) => {
       }
     });
   });
+
+  app.put("/tasks",(req,res,next)=> {
+    let strSessionID = req.query.sessionid || req.body.sessionid;
+    let strTaskID = req.query.taskid || req.body.taskid;
+    let strTask = req.query.task || req.body.task;
+    let strNotes = req.query.notes || req.body.notes;
+    let strStatus = req.query.status || req.body.status;
+    let strTaskStartTime = req.query.taskstarttime || req.body.taskstarttime;
+    let strTaskEndTime = req.query.taskendtime || req.body.taskendtime;
+    
+    getSessionDetails(strSessionID,function(objSession){
+        if(objSession){
+            pool.query("Update tblTasks SET TaskName = ?, Notes = ?, Status = ?, taskStartTime=?, taskEndTime=?, WHERE TaskID = ?", 
+            [strTask, strNotes, strStatus,strTaskStartTime,strTaskEndTime, strTaskID], function(error,results){
+                if(!error){
+                    let objMessage = new Message("Success","Task Updated");
+                    res.status(200).send(objMessage);
+                } else {
+                    let objError = new Message("Error",error);
+                }
+            });
+        }
+    });
+});
+
+
 
 app.post("/unitofmeasure", (req, res, next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
@@ -921,26 +977,6 @@ app.put("/tasklog",(req,res,next)=> {
 });
 
 
-app.put("/task",(req,res,next)=> {
-    let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strTaskName = req.query.taskname || req.body.taskname;
-    let strNote = req.query.note || req.body.note;
-    let strStatus = req.query.status || req.body.status;
-    let strTaskID = req.query.taskid || req.body.taskid;
-    
-    getSessionDetails(strSessionID,function(objSession){
-        if(objSession){
-            pool.query("Update tblTask SET TaskName = ?, Note = ?, Status = ? WHERE TaskID = ?", [strTaskName, strNote, strStatus, strTaskID], function(error,results){
-                if(!error){
-                    let objMessage = new Message("Success","Task Updated");
-                    res.status(200).send(objMessage);
-                } else {
-                    let objError = new Message("Error",error);
-                }
-            });
-        }
-    });
-});
 
 
 
@@ -1108,13 +1144,10 @@ app.delete("/taskslog", (req,res,next) => {
 
 app.delete("/tasks", (req,res,next) => {
     let strSessionID = req.query.sessionid || req.body.sessionid;
-    let strTaskID = uuidv4();
-    let strTaskName = req.query.taskname || req.body.taskname;
-    let strNote = req.query.note || req.body.note;
-    let strStatus = req.query.status || req.body.status;
+    let strTaskID = req.query.taskid || req.body.taskid;
     getSessionDetails(strSessionID,function(objSession){
         if(objSession){
-            pool.query("DELETE FROM tblTasks WHERE TaskID = ? AND TaskName = ? AND Note = ? AND Status = ?",[strTaskID, strTaskName, strNote, strStatus], function(error,results){
+            pool.query("DELETE FROM tblTasks WHERE TaskID = ?",[strTaskID], function(error,results){
                 if(!error){
                     let objMessage = new Message("Success","Task Deleted");
                     res.status(202).send(objMessage)
